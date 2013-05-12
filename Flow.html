@@ -4,16 +4,36 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Flow Tower Defense</title>
 
+<style type="text/css">
+	html, body {
+		height: 100%;
+		margin: 0;
+	}
+
+	#GameContainer {
+		position: fixed;
+		width: 800;
+		height: 600;
+		left: 0;
+		top: 0;
+		border: 1px;
+		text-align: center;
+    }
+
+</style>
+
 <script language="javascript" src="http://code.jquery.com/jquery-1.4.2.js" ></script>
+
+<script src="lib/easeljs-0.6.0.min.js"></script>
 
 <script language="javascript" src="Flow.js" ></script>
 
 </head>
 
 <body>
-    <div id="container" style="border:1px solid; width:480px; height:320px;">
+    <div id="GameContainer">
     	
-        <canvas id="canvas" width="480" height="320" >
+        <canvas id="GameCanvas" width=800 height=600>
         Your browser doesn't support HTML5, dickbag
         </canvas>
         
