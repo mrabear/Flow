@@ -1,20 +1,48 @@
 //Wait for DOM to load before starting a game
 $(window).ready(function(){ 
-	init(); 
+	Initialize(); 
 });
 
 var DrawingContext;
-var ScreenWidth,ScreenHeight;
+var Canvas;
 
-function init(){
+function Initialize(){
+
+	Canvas = document.getElementById('GameCanvas');
 	//Get a handle to the 2d context of the canvas
-	DrawingContext = document.getElementById('GameCanvas').getContext('2d'); 
+	DrawingContext = Canvas.getContext('2d'); 
 	
-	//Calulate screen height and width
-	ScreenWidth = parseInt($("#GameCanvas").attr("width"));
-	ScreenHeight = parseInt($("#GameCanvas").attr("height"));
+	ResizeCanvas();
 
-	DrawingContext.fillRect(10, 20, ScreenWidth, ScreenHeight);
-	//alert( ScreenHeight + " x " + ScreenWidth);
 }
 
+function ResizeCanvas()
+{
+	if( Canvas.width != document.width)
+	{
+		Canvas.width = document.width;		
+	}
+
+	if( Canvas.height != document.height)
+	{
+		Canvas.height = document.height;
+
+	}
+}
+
+function Draw()
+{
+	ResizeCanvas();
+	
+	DrawingContext.fillStyle="#FF0000";
+	DrawingContext.fillRect(0, 0, Canvas.width, Canvas.height);
+	
+	DrawingContext.fillStyle="#000000";
+	DrawingContext.fillRect(10, 10, Canvas.width-20, Canvas.height-20);	
+}
+
+function ProcessFrame() {
+	Draw();
+}
+
+setInterval(ProcessFrame, 30);
