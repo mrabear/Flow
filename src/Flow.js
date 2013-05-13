@@ -3,12 +3,18 @@ $(window).ready(function(){
 	Initialize(); 
 });
 
-var DrawingContext;
-var Canvas;
+var DrawingContext, Canvas;
+
+var AspectRatio = 0.75;
+var MinCanvasSize = { width: 800, height: 600};
+
+var MouseXY = {x: 0, y: 0};
+var IsMouseDown = false;
 
 var GameSurfaceBounds = new Object();
 
 var Bumpers = new Array();
+var BumperAngle = 0;
 
 function Initialize(){
 
@@ -27,6 +33,8 @@ function Initialize(){
 
 	// Build the bumpers
 	BuildBumpers();
+
+	InitializeInput();
 }
 
 // Resizes the canvas to maximize it in the browser window
@@ -36,11 +44,11 @@ function ResizeCanvas()
 	if(( Canvas.width != document.width) || ( Canvas.height != document.height))
 	{
 		// Resize the canvas to fit the window
-		Canvas.width = document.width;		
-		Canvas.height = document.height;
+		Canvas.width = Math.max( MinCanvasSize.width, document.width );
+		Canvas.height = Math.max( MinCanvasSize.height, document.height );
 
 		// Resize the game surface
-		GameSurfaceBounds.width = Math.round( Math.min( document.width, document.height ));
+		GameSurfaceBounds.width = Math.max( MinCanvasSize.width, Math.round( Math.min( document.width, document.height )));
 		GameSurfaceBounds.height = Math.round( GameSurfaceBounds.width * 0.75 );
 
 		// The top left corner of the game surface
@@ -74,13 +82,16 @@ function DrawBorders()
 	DrawingContext.fillRect(GameSurfaceBounds.TopLeft.x, GameSurfaceBounds.TopLeft.y, GameSurfaceBounds.width, GameSurfaceBounds.height);	
 
 	DrawingContext.font = "bold 12px sans-serif";
-	DrawingContext.fillText(GameSurfaceBounds.width + " x " + GameSurfaceBounds.height, 25, 43);	
+	DrawingContext.fillText( "Bumper Angle: " + BumperAngle + " (" + IsMouseDown + ")", 25, 25);	
+	DrawingContext.fillText( "Canvas: " + Canvas.width + " x " + GameSurfaceBounds.height, 25, 40);	
+	DrawingContext.fillText( "GameSurface: " + GameSurfaceBounds.width + " x " + GameSurfaceBounds.height, 25, 55);	
 }
 
 // Build an array of bumpers for the player to use
 function BuildBumpers()
 {
-	Bumpers[0] = {Radius: GameSurfaceBounds.width * 0.1, StartAngle: 1 * Math.PI, EndAngle: 0 * Math.PI, Color: 'black', LineWdith: 10};
+	Bumpers[0] = {Length: 0.5, Offset: 1, Color: "#000000", LineWdith: 10};
+	Bumpers[1] = {Length: 0.5, Offset: 1.5, Color: "#FF0000", LineWdith: 10};
 }
 
 // Draw all of the current bumpers
@@ -89,16 +100,25 @@ function DrawBumpers()
 	//console.log( "drawing bumpers " + Bumpers[0].Color )
 
     var BumperTotal = Bumpers.length;
+    var StartAngle, EndAngle;
 
-    for( var BumperIndex = 0 ; BumperIndex < BumperTotal ; BumperIndex++ )
+    for( var BumperIndex = 0 ; BumperIndex <= BumperTotal ; BumperIndex++ )
     {
+    	StartAngle = BumperAngle + Bumpers[BumperIndex].Offset;
+    	if( StartAngle > 2 )
+    		StartAngle = StartAngle % 2;
+
+    	EndAngle = BumperAngle + Bumpers[BumperIndex].Length + Bumpers[BumperIndex].Offset;
+    	if( EndAngle > 2 )
+    		EndAngle = EndAngle % 2;
+
 		DrawingContext.beginPath();
-		DrawingContext.arc(GameSurfaceBounds.Center.x, GameSurfaceBounds.Center.y, 
-			               Bumpers[0].Radius, Bumpers[0].StartAngle, Bumpers[0].EndAngle, false);
-		DrawingContext.lineWidth = Bumpers[0].LineWdith;
+		DrawingContext.arc(GameSurfaceBounds.Center.x, GameSurfaceBounds.Center.y, GameSurfaceBounds.width * 0.1,
+							StartAngle * Math.PI , EndAngle * Math.PI, false);
+		DrawingContext.lineWidth = Bumpers[BumperIndex].LineWdith;
 
 		// line color
-		DrawingContext.strokeStyle = Bumpers[0].Color;
+		DrawingContext.strokeStyle = Bumpers[BumperIndex].Color;
 		DrawingContext.stroke();
 
 		//DrawingContext.fillStyle = 'green';
