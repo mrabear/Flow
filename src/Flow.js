@@ -19,11 +19,12 @@ var Game =
 		Input.Initialize();
 	},
 
-	ProcessFrame: function() 
+	ProcessGameLoop: function() 
 	{
-		Graphics.Draw();
+		Balls.SpawnBall();
+		Graphics.DrawFrame();
 	}
 };
 
 // Start the game loop
-setInterval(Game.ProcessFrame, 30);
+setInterval(Game.ProcessGameLoop, 30);

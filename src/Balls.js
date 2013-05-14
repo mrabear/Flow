@@ -12,13 +12,13 @@ var Balls =
 			var BallX,BallY,Radius = 0;
 
 			var Angle = Math.random() * 360;
-			var Radius = Math.max(Graphics.GameSurfaceBounds.Center.x - Graphics.GameSurfaceBounds.TopLeft.x, Graphics.GameSurfaceBounds.Center.y - Graphics.GameSurfaceBounds.TopLeft.y ) + 30;
+			var Radius = Math.max(Graphics.CenterPoint.x, Graphics.CenterPoint.y ) + 30;
 
-			Balls.Instance.push( {x: Graphics.GameSurfaceBounds.Center.x + Radius * Math.cos(Angle), 
-				         y: Graphics.GameSurfaceBounds.Center.y + Radius * Math.sin(Angle),
-				         Angle: Math.abs( 180 - Angle ),
-				         Speed: Math.floor( Math.random() * 3), 
-				         Color: "#000000"} );
+			Balls.Instance.push({	x: Graphics.CenterPoint.x + Radius * Math.cos(Angle), 
+				         			y: Graphics.CenterPoint.y + Radius * Math.sin(Angle),
+							        Angle: Math.abs( 180 - Angle ),
+							        Speed: Math.floor( Math.random() * 3), 
+							        Color: "#000000"} );
 		}
 	},
 
@@ -36,7 +36,7 @@ var Balls =
 			// Draw the ball onto the screen
 			DrawingContext.arc(Balls.Instance[CurrentBall].x, 
 							   Balls.Instance[CurrentBall].y, 
-							   Graphics.GameSurfaceBounds.width * 0.01,
+							   Graphics.Canvas.width * 0.01,
 							   0 * Math.PI , 
 							   2 * Math.PI, false);
 
@@ -49,6 +49,16 @@ var Balls =
 			// The ball fill
 			DrawingContext.fillStyle = Balls.Instance[CurrentBall].Color;
 			DrawingContext.fill();
+		}
+	},
+
+	AdjustPosition: function(XOffset, YOffset)
+	{
+		var BallTotal = Balls.Instance.length;
+		for( var CurrentBall = 0 ; CurrentBall < BallTotal ; CurrentBall++ )
+		{
+			Balls.Instance[CurrentBall].x += XOffset;
+			Balls.Instance[CurrentBall].y += YOffset;
 		}
 	}
 };

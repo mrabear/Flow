@@ -40,11 +40,11 @@ var Bumper = {
 
 			DrawingContext.beginPath();
 
-			DrawingContext.arc(Graphics.GameSurfaceBounds.Center.x, 
-								   Graphics.GameSurfaceBounds.Center.y, 
-								   Graphics.GameSurfaceBounds.width * 0.1,
-								   StartAngle * Math.PI , 
-								   EndAngle * Math.PI, false);
+			DrawingContext.arc( Graphics.CenterPoint.x, 
+								Graphics.CenterPoint.y, 
+								Graphics.Canvas.width * 0.1,
+								StartAngle * Math.PI , 
+								EndAngle * Math.PI, false);
 
 			DrawingContext.lineWidth = Bumper.Instance[BumperIndex].LineWdith;
 
