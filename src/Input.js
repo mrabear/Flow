@@ -1,40 +1,49 @@
-function InitializeInput()
-{
-	Canvas.addEventListener("mousedown", MouseDown, false);
-	Canvas.addEventListener("mousemove", MouseMove, true);
-	//GameCanvas.addEventListener("touchstart", TouchDown, false);
-	//GameCanvas.addEventListener("touchmove", TouchXY, true);
-	//GameCanvas.addEventListener("touchend", TouchUp, false);
+// src.Input.js
+// Handles mouse and touch input
 
-	document.body.addEventListener("mouseup", MouseUp, false);
-	//document.body.addEventListener("touchcancel", touchUp, false);
-}
-
-function MouseDown(e)
+var Input = 
 {
-	IsMouseDown = true;
-	MouseXY.x = e.pageX;
-	MouseXY.y = e.pageY;
-	console.log( IsMouseDown + "| Mouse Down at " + MouseXY.x + "," + MouseXY.y );
-}
+	MouseXY: {x: 0, y: 0},
+	IsMouseDown: false,
 
-function MouseMove(e)
-{
-	if( IsMouseDown )
+	Initialize: function()
 	{
-		BumperAngle = BumperAngle + ( MouseXY.x - e.pageX ) * ( 1 / 250);
+		Graphics.Canvas.addEventListener("mousedown", Input.MouseDown, false);
+		Graphics.Canvas.addEventListener("mousemove", Input.MouseMove, true);
+		//GameCanvas.addEventListener("touchstart", TouchDown, false);
+		//GameCanvas.addEventListener("touchmove", TouchXY, true);
+		//GameCanvas.addEventListener("touchend", TouchUp, false);
 
-		if( BumperAngle > 2 )
-			BumperAngle = 0;
-		else if( BumperAngle < 0 )
-			BumperAngle = 2;
+		document.body.addEventListener("mouseup", Input.MouseUp, false);
+		//document.body.addEventListener("touchcancel", touchUp, false);
+	},
 
-		MouseXY.x = e.pageX;
-		MouseXY.y = e.pageY;
+	MouseDown: function(e)
+	{
+		Input.IsMouseDown = true;
+		Input.MouseXY.x = e.pageX;
+		Input.MouseXY.y = e.pageY;
+		console.log( Input.IsMouseDown + "| Mouse Down at " + Input.MouseXY.x + "," + Input.MouseXY.y );
+	},
+
+	MouseMove: function(e)
+	{
+		if( Input.IsMouseDown )
+		{
+			Bumper.Angle = Bumper.Angle + ( Input.MouseXY.x - e.pageX ) * ( 1 / 250);
+
+			if( Bumper.Angle > 2 )
+				Bumper.Angle = 0;
+			else if( Bumper.Angle < 0 )
+				Bumper.Angle = 2;
+
+			Input.MouseXY.x = e.pageX;
+			Input.MouseXY.y = e.pageY;
+		}
+	},
+
+	MouseUp: function(e)
+	{
+		Input.IsMouseDown = false;
 	}
-}
-
-function MouseUp(e)
-{
-	IsMouseDown = false;
-}
+};
