@@ -11,12 +11,14 @@ The browser page for Flow, draws the game canvas and executes the game code
 
 <!-- The game container and body are set to maximize themselves on the screen -->
 <style type="text/css">
-	html, body {
+	html, body 
+	{
 		min-height: 100%;
 		margin: 0;
 	}
 
-	#GameContainer {
+	#GameContainer 
+	{
 		position: fixed;
 		width: 100%;
 		height: 100%;
@@ -26,7 +28,7 @@ The browser page for Flow, draws the game canvas and executes the game code
 		text-align: center;
 		vertical-align: middle;
 		background-color: #AAAAAA;
-    }
+	}
 </style>
 
 <!-- Include jquery -->
@@ -36,14 +38,14 @@ The browser page for Flow, draws the game canvas and executes the game code
 
 <body>
 	<!-- The game container stretches to fill the screen, provides a container for the canvas -->
-    <div id="GameContainer">
-    	
-    	<!-- The canvas that the game will be rendered on -->
-        <canvas id="GameCanvas">
-        Your browser doesn't support HTML5, dickbag
-        </canvas>
-        
-    </div>
+	<div id="GameContainer">
+
+		<!-- The canvas that the game will be rendered on -->
+		<canvas id="GameCanvas">
+		Your browser doesn't support HTML5, dickbag
+		</canvas>
+
+	</div>
 </body>
 
 <!-- Include the game code -->

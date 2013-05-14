@@ -28,25 +28,25 @@ var Bumper = {
 	DrawBumperSegments: function( DrawingContext )
 	{
 		// The total number of bumpers to draw (used in the for loop, cached in a var for performance reasons)
-	    var BumperTotal = Bumper.Segments.length;
+		var BumperTotal = Bumper.Segments.length;
 
-	    // The start and end angles for each bumper segment
-	    var StartAngle, EndAngle;
+		// The start and end angles for each bumper segment
+		var StartAngle, EndAngle;
 
-	    // Loop through each bumper segment, calculate it's position, and draw it
-	    for( var BumperIndex = 0 ; BumperIndex < BumperTotal ; BumperIndex++ )
-	    {
-	    	// Calculate the starting angle of the bumper segment
-	    	StartAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Offset;
-	    	if( StartAngle > 2 )
-	    		StartAngle = StartAngle % 2;
+		// Loop through each bumper segment, calculate it's position, and draw it
+		for( var BumperIndex = 0 ; BumperIndex < BumperTotal ; BumperIndex++ )
+		{
+			// Calculate the starting angle of the bumper segment
+			StartAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Offset;
+			if( StartAngle > 2 )
+				StartAngle = StartAngle % 2;
 
-	    	// Calculate the ending angle of the bumper segment
-	    	EndAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Length + Bumper.Segments[BumperIndex].Offset;
-	    	if( EndAngle > 2 )
-	    		EndAngle = EndAngle % 2;
+			// Calculate the ending angle of the bumper segment
+			EndAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Length + Bumper.Segments[BumperIndex].Offset;
+			if( EndAngle > 2 )
+				EndAngle = EndAngle % 2;
 
-	    	// Open the canvas for drawing
+			// Open the canvas for drawing
 			DrawingContext.beginPath();
 
 			// Define the bumper segment based off of the previous calculations

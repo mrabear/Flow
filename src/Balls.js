@@ -22,10 +22,10 @@ var Balls =
 
 			// Create a new instance of the ball, at the point in space 'Radius' distance away at 'Angle' angle
 			Balls.Instances.push({	x: Graphics.CenterPoint.x + Radius * Math.cos(Angle), 
-				         			y: Graphics.CenterPoint.y + Radius * Math.sin(Angle),
-							        Angle: Math.abs( 180 - Angle ),
-							        Speed: Math.floor( Math.random() * 3), 
-							        Color: "#000000"} );
+									y: Graphics.CenterPoint.y + Radius * Math.sin(Angle),
+									Angle: Math.abs( 180 - Angle ),
+									Speed: Math.floor( Math.random() * 3), 
+									Color: "#000000"} );
 		}
 	},
 
@@ -38,7 +38,7 @@ var Balls =
 		// Loop through each active ball, update it's position, and draw it
 		for( var CurrentBall = 0 ; CurrentBall < BallTotal ; CurrentBall++ )
 		{
-	    	// Open the canvas for drawing
+			// Open the canvas for drawing
 			DrawingContext.beginPath();
 
 			// Update the position of the ball

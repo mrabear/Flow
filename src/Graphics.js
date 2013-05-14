@@ -26,7 +26,7 @@ var Graphics =
 	// Initializes the graphics objects
 	Initialize: function(){
 
-	    // Find the drawing canvas
+		// Find the drawing canvas
 		Graphics.Canvas = document.getElementById('GameCanvas');
 
 		// Get a handle to the 2d context of the canvas
