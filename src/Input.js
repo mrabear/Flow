@@ -20,8 +20,8 @@ function MouseDown(e)
 
 function MouseMove(e)
 {
-	//if( IsMouseDown )
-	//{
+	if( IsMouseDown )
+	{
 		BumperAngle = BumperAngle + ( MouseXY.x - e.pageX ) * ( 1 / 250);
 
 		if( BumperAngle > 2 )
@@ -31,7 +31,7 @@ function MouseMove(e)
 
 		MouseXY.x = e.pageX;
 		MouseXY.y = e.pageY;
-	//}
+	}
 }
 
 function MouseUp(e)
