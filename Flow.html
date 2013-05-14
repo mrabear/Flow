@@ -1,9 +1,15 @@
+<!-- 
+Flow.html
+The browser page for Flow, draws the game canvas and executes the game code
+-->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Flow Tower Defense</title>
 
+<!-- The game container and body are set to maximize themselves on the screen -->
 <style type="text/css">
 	html, body {
 		min-height: 100%;
@@ -21,18 +27,18 @@
 		vertical-align: middle;
 		background-color: #AAAAAA;
     }
-
 </style>
 
+<!-- Include jquery -->
 <script language="javascript" src="http://code.jquery.com/jquery-1.4.2.js" ></script>
-
 <!--<script language="javascript" src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>-->
-
 </head>
 
 <body>
+	<!-- The game container stretches to fill the screen, provides a container for the canvas -->
     <div id="GameContainer">
     	
+    	<!-- The canvas that the game will be rendered on -->
         <canvas id="GameCanvas">
         Your browser doesn't support HTML5, dickbag
         </canvas>
@@ -40,6 +46,7 @@
     </div>
 </body>
 
+<!-- Include the game code -->
 <script language="javascript" src="src/Input.js" ></script>
 <script language="javascript" src="src/Bumper.js" ></script>
 <script language="javascript" src="src/Balls.js" ></script>

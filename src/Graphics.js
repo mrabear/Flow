@@ -1,19 +1,29 @@
 // src.Graphics.js
 // Graphics libraries and drawing functions
-
 var Graphics = 
 {
+	// The 2D render conext that will be used to draw graphics
 	DrawingContext: {}, 
+
+	// The HTML5 canvas that the game runs in
 	Canvas: {},
 
+	// The aspect ratio to maintain while resizing the canvas
 	AspectRatio: 0.75,
+
+	// The minimum size to maintain while resizing the canvas
 	MinCanvasSize: { width: 800, height: 600},
 
+	// The center point of the canvas
 	CenterPoint: { x: 0, y: 0 },
-	CanvasSize: { width: 0, height: 0 },
 
+	// The current size of the browser window (used to detect window resizing)
 	WindowSize: { width: 0, height: 0 },
 
+	// The fixed framerate of the game
+	FramesPerSecond: 30,
+
+	// Initializes the graphics objects
 	Initialize: function(){
 
 	    // Find the drawing canvas
@@ -26,45 +36,57 @@ var Graphics =
 		Graphics.ResizeCanvas();
 	},
 
-	DrawFrame: function()
+	// Renders a single frame of game graphics
+	RenderFrame: function()
 	{
 		// Resize the canvas (if the browser has been resized)
 		Graphics.ResizeCanvas();
 
+		// Draw the background graphics
 		Graphics.DrawBackground(Graphics.DrawingContext);
 
-		Bumper.DrawBumpers(Graphics.DrawingContext);
+		// Draw the center bumpers
+		Bumper.DrawBumperSegments(Graphics.DrawingContext);
 
+		// Draw the balls and update the position of existing balls
 		Balls.DrawBalls(Graphics.DrawingContext);
 
+		// Draw any debug messages
 		Graphics.DrawDebugMessages(Graphics.DrawingContext);
 	},
 
 	// Resizes the canvas to maximize it in the browser window
 	ResizeCanvas: function()
 	{
+		// Check to see if the screen has changed since the last time it was resized
 		if(( document.width != Graphics.WindowSize.width) || ( document.height != Graphics.WindowSize.height))
 		{
-			console.log( "resizing ")
+			var CanvasSize = {};
+
+			// Save the new screen size
 			Graphics.WindowSize.width  = document.width;
 			Graphics.WindowSize.height = document.height;
 
-			// Resize the game surface
-			Graphics.CanvasSize.width  = Math.max( Graphics.MinCanvasSize.width, Math.round( 
+			// Calculate the new game surface dimensions, maximizing surface area while maintaining the aspect ratio defined by Graphics.AspectRatio
+			CanvasSize.width  = Math.max( Graphics.MinCanvasSize.width, Math.round( 
 													Graphics.AspectRatio * document.width <= document.height ? document.width : Math.min( document.height / Graphics.AspectRatio, document.width ) 
 											   	));
-			Graphics.CanvasSize.height = Math.round( Graphics.CanvasSize.width * 0.75 );
+			CanvasSize.height = Math.round( CanvasSize.width * 0.75 );
 
-			Balls.AdjustPosition( Graphics.CanvasSize.width - Graphics.Canvas.width, Graphics.CanvasSize.height - Graphics.Canvas.height );
+			// Translate the position of the balls so that their orientation on the resized game surface remains similar
+			Balls.TranslateBallPositions( CanvasSize.width - Graphics.Canvas.width, CanvasSize.height - Graphics.Canvas.height );
 
-			Graphics.Canvas.width  = Graphics.CanvasSize.width;
-			Graphics.Canvas.height = Graphics.CanvasSize.height;
+			// Resize the canvas
+			Graphics.Canvas.width  = CanvasSize.width;
+			Graphics.Canvas.height = CanvasSize.height;
 
+			// Calculate the new canvas center point
 			Graphics.CenterPoint.x = Math.round( Graphics.Canvas.width / 2 );
 			Graphics.CenterPoint.y = Math.round( Graphics.Canvas.height / 2 );
 		}
 	},
 
+	// Draw the background images
 	DrawBackground: function( DrawingContext )
 	{
 		// inner game surface color
@@ -72,6 +94,7 @@ var Graphics =
 		DrawingContext.fillRect(0, 0, Graphics.Canvas.width, Graphics.Canvas.height);
 	},
 
+	// Draw debug messages
 	DrawDebugMessages: function( DrawingContext )
 	{
 		DrawingContext.font = "bold 12px sans-serif";
