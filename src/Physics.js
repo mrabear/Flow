@@ -1,70 +1,62 @@
-// src.Physics.js
+// src.physics.js
 // Contains the physics implementation of the game world
-var Physics = {
 
-	// Shortcuts for the Box2dWeb libraries
-	b2Vec2: Box2D.Common.Math.b2Vec2,
-	b2BodyDef: Box2D.Dynamics.b2BodyDef,
-	b2Body: Box2D.Dynamics.b2Body,
-	b2FixtureDef: Box2D.Dynamics.b2FixtureDef,
-	b2Fixture: Box2D.Dynamics.b2Fixture,
-	b2World: Box2D.Dynamics.b2World,
-	b2MassData: Box2D.Collision.Shapes.b2MassData,
-	b2PolygonShape: Box2D.Collision.Shapes.b2PolygonShape,
-	b2CircleShape: Box2D.Collision.Shapes.b2CircleShape,
-	b2DebugDraw: Box2D.Dynamics.b2DebugDraw,
+// Shortcuts for the Box2dWeb libraries
+var b2Vec2 = Box2D.Common.Math.b2Vec2;
+var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+var b2Body = Box2D.Dynamics.b2Body;
+var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
+var b2Fixture = Box2D.Dynamics.b2Fixture;
+var b2World = Box2D.Dynamics.b2World;
+var b2MassData = Box2D.Collision.Shapes.b2MassData;
+var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
+var physics = {
 	// The physics world simulation
-	World: {},
+	world: {},
 
 	// The physics visualization layer
-	Visualization: {},
+	visualization: {},
 
 	// The pixel/km scale
-	Scale: 30,
+	scale: 30,
 
 	// Set to true to visualize the physics entities
-	VisualizePhysics: true,
+	visualizePhysics: true,
+
+	bodies: [],
+
+	standardFixture: {},
 
 	Initialize: function() {
 		// Create a test object
-		Physics.World = new Physics.b2World(
-		new Physics.b2Vec2(0, 0) //gravity
+		physics.world = new b2World(
+		new b2Vec2(0, 0) //gravity
 		,
 		true //allow sleep
 		);
 
-		if (Physics.VisualizePhysics) {
-			Physics.Visualization = new Physics.b2DebugDraw();
-			Physics.Visualization.SetSprite(Graphics.DrawingContext);
-			Physics.Visualization.SetDrawScale(Physics.Scale);
-			Physics.Visualization.SetFillAlpha(0.3);
-			Physics.Visualization.SetLineThickness(1.0);
-			Physics.Visualization.SetFlags(Physics.b2DebugDraw.e_shapeBit | Physics.b2DebugDraw.e_jointBit);
-			Physics.World.SetDebugDraw(Physics.Visualization);
+		if (physics.visualizePhysics) {
+			physics.visualization = new b2DebugDraw();
+			physics.visualization.SetSprite(graphics.drawingContext);
+			physics.visualization.SetDrawScale(physics.scale);
+			physics.visualization.SetFillAlpha(0.3);
+			physics.visualization.SetLineThickness(1.0);
+			physics.visualization.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			physics.world.SetDebugDraw(physics.visualization);
 		}
 
-		var fixDef = new Physics.b2FixtureDef;
-
-		var bodyDef = new Physics.b2BodyDef;
-
-		//create some objects
-		bodyDef.type = Physics.b2Body.b2_dynamicBody;
-		bodyDef.position.x = Math.random() * 10;
-		bodyDef.position.y = Math.random() * 10;
-
-		fixDef.shape = new Physics.b2CircleShape(
-		Math.random() + 0.1 //radius
-		);
-		fixDef.density = 1.0;
-		fixDef.friction = 0.5;
-		fixDef.restitution = 0.2;
-
-		Physics.World.CreateBody(bodyDef).CreateFixture(fixDef);
+		physics.standardFixture = new b2FixtureDef;
+		physics.standardFixture.density = 1.0;
+		physics.standardFixture.friction = 0.5;
+		physics.standardFixture.restitution = 0.2;
 	},
 
 	Step: function() {
-		Physics.World.Step(
+
+		physics.world.Step(
 		1 / 60 //frame-rate
 		,
 		10 //velocity iterations
@@ -72,8 +64,22 @@ var Physics = {
 		10 //position iterations
 		);
 
-		Physics.World.DrawDebugData();
-		Physics.World.ClearForces();
-	}
+		physics.world.DrawDebugData();
+		physics.world.ClearForces();
+	},
 
+	CreateBallPhysicsBody: function(x, y, radius, power, angle) {
+		var bodyDef = new b2BodyDef;
+
+		bodyDef.type = b2Body.b2_dynamicBody;
+		bodyDef.position.x = x;
+		bodyDef.position.y = y;
+
+		var body = physics.world.CreateBody(bodyDef);
+		body.CreateFixture(pysics.standardFixture);
+
+		body.ApplyImpulse(new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
+		Math.sin(angle * (Math.PI / 180)) * power),
+		body.GetWorldCenter());
+	}
 };

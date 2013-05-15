@@ -1,81 +1,81 @@
-// src.Bumper.js
+// src.bumper.js
 // The bumper at the center of the screen, controlled by the player
-var Bumper = {
+var bumper = {
 
 	// The list of all active bumper segments
-	Segments: [],
+	segments: [],
 
 	// The bumper orientation angle
-	Angle: 0,
+	angle: 0,
 
 	// Builds the bumper objects and readies them for the game
 	Initialize: function() {
 
-		Bumper.BuildBumperSegments();
+		bumper.BuildBumperSegments();
 	},
 
 	// Build an array of bumpers for the player to use
 	BuildBumperSegments: function() {
-		Bumper.Segments[0] = {
-			Length: 0.2,
-			Offset: 0.25,
-			Color: "#000000",
-			LineWdith: 10
+		bumper.segments[0] = {
+			length: 0.2,
+			offset: 0.25,
+			color: "#000000",
+			lineWdith: 10
 		};
-		Bumper.Segments[1] = {
-			Length: 0.2,
-			Offset: 0.75,
-			Color: "#FF0000",
-			LineWdith: 10
+		bumper.segments[1] = {
+			length: 0.2,
+			offset: 0.75,
+			color: "#FF0000",
+			lineWdith: 10
 		};
-		Bumper.Segments[2] = {
-			Length: 0.2,
-			Offset: 1.50,
-			Color: "#000000",
-			LineWdith: 10
+		bumper.segments[2] = {
+			length: 0.2,
+			offset: 1.50,
+			color: "#000000",
+			lineWdith: 10
 		};
-		Bumper.Segments[3] = {
-			Length: 0.2,
-			Offset: 1.75,
-			Color: "#FF0000",
-			LineWdith: 10
+		bumper.segments[3] = {
+			length: 0.2,
+			offset: 1.75,
+			color: "#FF0000",
+			lineWdith: 10
 		};
 	},
 
 	// Draw all of the current bumpers
-	DrawBumperSegments: function(DrawingContext) {
+	DrawBumperSegments: function(drawingContext) {
 		// The total number of bumpers to draw (used in the for loop, cached in a var for performance reasons)
-		var BumperTotal = Bumper.Segments.length;
+		var bumperTotal = bumper.segments.length;
 
 		// The start and end angles for each bumper segment
-		var StartAngle, EndAngle;
+		var startAngle, endAngle;
 
 		// Loop through each bumper segment, calculate it's position, and draw it
-		for (var BumperIndex = 0; BumperIndex < BumperTotal; BumperIndex++) {
+		for (var bumperIndex = 0; bumperIndex < bumperTotal; bumperIndex++) {
 			// Calculate the starting angle of the bumper segment
-			StartAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Offset;
-			if (StartAngle > 2) StartAngle = StartAngle % 2;
+			startAngle = bumper.angle + bumper.segments[bumperIndex].offset;
+			if (startAngle > 2) startAngle = startAngle % 2;
 
 			// Calculate the ending angle of the bumper segment
-			EndAngle = Bumper.Angle + Bumper.Segments[BumperIndex].Length + Bumper.Segments[BumperIndex].Offset;
-			if (EndAngle > 2) EndAngle = EndAngle % 2;
+			endAngle = bumper.angle + bumper.segments[bumperIndex].length + bumper.segments[bumperIndex].offset;
+			if (endAngle > 2) endAngle = endAngle % 2;
 
 			// Open the canvas for drawing
-			DrawingContext.beginPath();
+			drawingContext.beginPath();
 
 			// Define the bumper segment based off of the previous calculations
-			DrawingContext.arc(Graphics.CenterPoint.x,
-			Graphics.CenterPoint.y,
-			Graphics.Canvas.width * 0.1,
-			StartAngle * Math.PI,
-			EndAngle * Math.PI, false);
+			drawingContext.arc(graphics.centerPoint.x,
+			graphics.centerPoint.y,
+			graphics.canvas.width * 0.1,
+			startAngle * Math.PI,
+			endAngle * Math.PI, false);
 
 			// Set the width and color of the bumper segment
-			DrawingContext.lineWidth = Bumper.Segments[BumperIndex].LineWdith;
-			DrawingContext.strokeStyle = Bumper.Segments[BumperIndex].Color;
+			drawingContext.lineWidth = bumper.segments[bumperIndex].lineWdith;
+			drawingContext.strokeStyle = bumper.segments[bumperIndex].color;
 
 			// Draw the bumper segment
-			DrawingContext.stroke();
+			drawingContext.stroke();
 		}
 	}
 };
