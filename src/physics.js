@@ -50,8 +50,8 @@ var physics = {
 
 		physics.standardFixture = new b2FixtureDef;
 		physics.standardFixture.density = 1.0;
-		physics.standardFixture.friction = 0.5;
-		physics.standardFixture.restitution = 0.2;
+		physics.standardFixture.friction = 0.0;
+		physics.standardFixture.restitution = 1.0;
 	},
 
 	Step: function() {
@@ -68,17 +68,9 @@ var physics = {
 		physics.world.ClearForces();
 	},
 
-	CreateBallPhysicsBody: function(x, y, radius, power, angle) {
-		var bodyDef = new b2BodyDef;
-
-		bodyDef.type = b2Body.b2_dynamicBody;
-		bodyDef.position.x = x;
-		bodyDef.position.y = y;
-
-		var body = physics.world.CreateBody(bodyDef);
-		body.CreateFixture(pysics.standardFixture);
-
-		body.ApplyImpulse(new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
+	ApplyImpulseToBody: function(body, power, angle) {
+		body.ApplyImpulse(
+		new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
 		Math.sin(angle * (Math.PI / 180)) * power),
 		body.GetWorldCenter());
 	}

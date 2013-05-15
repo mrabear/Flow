@@ -26,7 +26,7 @@ var flow = {
 		requestAnimationFrame(flow.ProcessGameLoop);
 
 		// Attempt to spawn a ball
-		//ballManager.SpawnBall();
+		ballManager.SpawnBall();
 
 		// Advance the physics simulation by a single step
 		physics.Step();
