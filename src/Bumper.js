@@ -2,7 +2,7 @@
 // The bumper at the center of the screen, controlled by the player
 var Bumper = {
 
-	// The list of all active bumpers
+	// The list of all active bumper segments
 	Segments: [],
 
 	// The bumper orientation angle

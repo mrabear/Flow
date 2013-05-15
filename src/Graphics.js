@@ -69,8 +69,8 @@ var Graphics =
 
 			// Calculate the new game surface dimensions, maximizing surface area while maintaining the aspect ratio defined by Graphics.AspectRatio
 			CanvasSize.width  = Math.max( Graphics.MinCanvasSize.width, Math.round( 
-													Graphics.AspectRatio * document.width <= document.height ? document.width : Math.min( document.height / Graphics.AspectRatio, document.width ) 
-											   	));
+											Graphics.AspectRatio * document.width <= document.height ? document.width : Math.min( document.height / Graphics.AspectRatio, document.width ) 
+										));
 			CanvasSize.height = Math.round( CanvasSize.width * 0.75 );
 
 			// Translate the position of the balls so that their orientation on the resized game surface remains similar
