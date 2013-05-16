@@ -33,6 +33,8 @@ var flow = {
 
 		// Render the next graphics frame
 		graphics.RenderFrame();
+
+		entityManager.CleanUpEntities();
 	}
 };
 

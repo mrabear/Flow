@@ -8,7 +8,7 @@ function ball(id, x, y, radius, color, angle) {
 	this.radius = radius || ballManager.minBallWidth;
 	this.color = color || "red";
 	this.angle = angle || 0;
-	this.body = this.CreatePhysicsBody();
+	//this.body = this.CreatePhysicsBody();
 };
 
 // Create the physics body for this ball
@@ -19,7 +19,7 @@ ball.prototype.CreatePhysicsBody = function() {
 	bodyDefinition.position.x = this.x / physics.scale;
 	bodyDefinition.position.y = this.y / physics.scale;
 	bodyDefinition.angle = this.angle;
-	bodyDefinition.userData = this.id;
+	//bodyDefinition.userData = this.id;
 
 	// Create a physics body out of the definition
 	var body = physics.world.CreateBody(bodyDefinition);
@@ -37,8 +37,8 @@ ball.prototype.draw = function(drawingContext) {
 	drawingContext.beginPath();
 
 	// Update the position of the ball
-	this.x = this.body.GetPosition().x * physics.scale;
-	this.y = this.body.GetPosition().y * physics.scale;
+	this.x = entityManager.entities[this.id].physicsBody.GetPosition().x * physics.scale;
+	this.y = entityManager.entities[this.id].physicsBody.GetPosition().y * physics.scale;
 
 	// Draw the ball onto the screen
 	drawingContext.arc(this.x, this.y, this.radius, 0 * Math.PI, 2 * Math.PI, false);
@@ -55,5 +55,4 @@ ball.prototype.draw = function(drawingContext) {
 
 	// Fill the ball color
 	drawingContext.fill();
-
 }

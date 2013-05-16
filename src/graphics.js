@@ -73,8 +73,13 @@ var graphics = {
 		// Draw the center bumpers
 		bumper.DrawBumperSegments(graphics.drawingContext);
 
-		// Draw the balls and update the position of existing balls
-		ballManager.DrawBalls(graphics.drawingContext);
+		for (var currentEntity in entityManager.entities) {
+			if (entityManager.entities[currentEntity].type == entityManager.types.ball) {
+				// Draw the balls and update the position of existing balls
+				//ballManager.DrawBalls(graphics.drawingContext);
+				entityManager.entities[currentEntity].graphicsDef.draw(graphics.drawingContext);
+			}
+		}
 
 		// Draw any debug messages
 		if (graphics.showDebugInfo) {
@@ -139,10 +144,13 @@ var graphics = {
 
 	// Toggle the physics visualization and adjust the global alpha channel accordingly
 	TogglePhysicsVisualization: function() {
+		// Toggle the physics visualization
 		graphics.visualizePhysics = !graphics.visualizePhysics;
 
+		// Dim the graphics if the physics visualizations are active
 		if (graphics.visualizePhysics) {
 			graphics.alphaChannel = 0.3;
+			// Restore the graphics opacity if there are no visualizations
 		} else {
 			graphics.alphaChannel = 1;
 		}

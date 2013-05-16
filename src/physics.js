@@ -26,13 +26,19 @@ var physics = {
 	// The list of active physics bodies in the current simulation
 	bodies: [],
 
+	bodiesToDelete: [],
+
 	// The prototype dynamic physics fixture, used as a template for most objects
 	standardFixture: {},
+
+	contactListener: new Box2D.Dynamics.b2ContactListener,
 
 	// Initialize the physics world 
 	Initialize: function() {
 		// Create a test object
 		physics.world = new b2World(new b2Vec2(0, 0), true);
+
+		physics.world.SetContactListener(physics.contactListener);
 
 		// Setup the physics visualization layer
 		physics.visualization = new b2DebugDraw();
@@ -48,6 +54,23 @@ var physics = {
 		physics.standardFixture.density = 1.0;
 		physics.standardFixture.friction = 0.0;
 		physics.standardFixture.restitution = 1.5;
+
+		var sensorFixture = new b2FixtureDef;
+		sensorFixture.isSensor = true;
+		sensorFixture.shape = new b2PolygonShape();
+		sensorFixture.shape.SetAsBox(100 / physics.scale, 100 / physics.scale);
+
+		var sensorBody = new b2BodyDef;
+		sensorBody.type = b2Body.b2_staticBody;
+		//sensorBody.userData = physics.bodyTypes.boundry;
+
+		// positions the center of the object (not upper left!)
+		sensorBody.position.x = graphics.centerPoint.x / physics.scale;
+		sensorBody.position.y = graphics.centerPoint.y / physics.scale;
+		physics.world.CreateBody(sensorBody).CreateFixture(sensorFixture);
+
+		// Add the sensor to the entity list
+		entityManager.AddEntity(entityManager.types.boundry, sensorBody, null);
 	},
 
 	// Increment the physics simulation by a single frame
@@ -79,8 +102,6 @@ var physics = {
 		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
 	},
 
-	
-
 	// Given two positions, Calculates the angle to a target
 	AngleToTarget: function(sourcePosition, targetPosition) {
 		var deltaPosition = {
@@ -89,5 +110,24 @@ var physics = {
 		};
 
 		return (Math.atan2(deltaPosition.y, deltaPosition.x));
+	},
+
+	CleanUpBodies: function() {
+		var bodyTotal = physics.bodiesToDelete.length;
+
+		for( var currentBody = 0 ; currentBody < bodyTotal ; currentBody++ ){
+			physics.world.DestroyBody(physics.bodiesToDelete[currentBody]);
+		}
+		physics.bodiesToDelete = [];
 	}
 };
+
+physics.contactListener.BeginContact = function(contact) {
+	var bodyAType = contact.GetFixtureA().GetBody().GetUserData();
+	var bodyBType = contact.GetFixtureB().GetBody().GetUserData();
+
+	if ((bodyAType == entityManager.types.boundry) || (bodyAType == entityManager.types.boundry)) {
+		if (bodyAType == physics.bodyTypes.ball) entityManager.entities( bodyAType + "" ).type = entityManager.types.remove;
+		if (bodyBType == physics.bodyTypes.ball) entityManager.entities( bodyBType + "" ).type = entityManager.types.remove;
+	}
+}
