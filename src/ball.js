@@ -1,5 +1,6 @@
 // src.ball.js
 // A single instance of an attacking ball
+
 function ball(id, x, y, radius, color, angle) {
 	this.id = id;
 	this.x = x;
@@ -24,7 +25,7 @@ ball.prototype.CreatePhysicsBody = function() {
 	var body = physics.world.CreateBody(bodyDefinition);
 
 	// Apply a circular bounding box to the body (used for hit detection)
-	physics.standardFixture.shape = new b2CircleShape( this.radius / physics.scale );
+	physics.standardFixture.shape = new b2CircleShape(this.radius / physics.scale);
 	body.CreateFixture(physics.standardFixture);
 
 	return (body);

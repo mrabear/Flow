@@ -28,11 +28,16 @@ var graphics = {
 		height: 0
 	},
 
+	colorList: ["#FF0000", "#000000"],
+
 	// Set to true to visualize the physics entities
 	visualizePhysics: false,
 
 	// Set to true to visualize the physics entities
 	showDebugInfo: true,
+
+	// The alpha channel to use for drawing shapes
+	alphaChannel: 1,
 
 	// Initializes the graphics objects
 	Initialize: function() {
@@ -52,19 +57,24 @@ var graphics = {
 		// Resize the canvas (if the browser has been resized)
 		graphics.ResizeCanvas();
 
-		// Draw the background graphics
+		// Clear the canvas
 		graphics.ClearCanvas(graphics.drawingContext);
+
+		// If the visualizePhysics flag is set, overwrite the canvas with the current physics simulation state (used to debug physics events)
+		if (graphics.visualizePhysics) {
+			graphics.drawingContext.globalAlpha = 1;
+			physics.world.DrawDebugData();
+		}
+
+		// Switch the alpha channel of the canvas
+		// (will dim the subsequent graphics to allow the physics visualization to bleed through)
+		graphics.drawingContext.globalAlpha = graphics.alphaChannel;
 
 		// Draw the center bumpers
 		bumper.DrawBumperSegments(graphics.drawingContext);
 
 		// Draw the balls and update the position of existing balls
 		ballManager.DrawBalls(graphics.drawingContext);
-
-		// If the visualizePhysics flag is set, overwrite the canvas with the current physics simulation state (used to debug physics events)
-		if (physics.visualizePhysics) {
-			physics.world.DrawDebugData();
-		}
 
 		// Draw any debug messages
 		if (graphics.showDebugInfo) {
@@ -108,6 +118,7 @@ var graphics = {
 
 	// Draw debug messages
 	DrawDebugMessages: function(drawingContext) {
+		graphics.drawingContext.globalAlpha = 1;
 		drawingContext.font = "bold 12px sans-serif";
 		drawingContext.fillStyle = "#000000";
 		drawingContext.fillText("Bumper Angle: " + bumper.angle + " (" + input.isMouseDown + ")", 10, 15);
@@ -119,5 +130,21 @@ var graphics = {
 		drawingContext.strokeStyle = "#000000";
 		drawingContext.strokeRect(graphics.canvas.width - 85, 10, 75, 20);
 		drawingContext.fillText("Physics Viz", graphics.canvas.width - 80, 25);
+	},
+
+	// Select a random color from the list of valid colors
+	GetRandomColor: function() {
+		return (graphics.colorList[Math.floor(Math.random() * graphics.colorList.length)]);
+	},
+
+	// Toggle the physics visualization and adjust the global alpha channel accordingly
+	TogglePhysicsVisualization: function() {
+		graphics.visualizePhysics = !graphics.visualizePhysics;
+
+		if (graphics.visualizePhysics) {
+			graphics.alphaChannel = 0.3;
+		} else {
+			graphics.alphaChannel = 1;
+		}
 	}
 };

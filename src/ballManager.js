@@ -5,7 +5,7 @@ var ballManager = {
 	activeBalls: [],
 
 	// The probability that a particular frame will spawn a ball
-	spawnProbability: 0.05,
+	spawnProbability: 0.25,
 
 	// The minimum ball width
 	minBallWidth: 10,
@@ -33,7 +33,7 @@ var ballManager = {
 			})
 
 			// Add some drift to the angle, adds some variety in the motion of the balls
-			angleToCenter += angleToCenter * ballManager.targetingDrift * (( Math.random() * 2 ) - 1);
+			angleToCenter += angleToCenter * ballManager.targetingDrift * ((Math.random() * 2) - 1);
 
 			// Tag the ball with it's index
 			var ballID = ballManager.activeBalls.length + 1;
@@ -42,7 +42,7 @@ var ballManager = {
 			var ballWidth = Math.random() * (ballManager.maxBallWidth - ballManager.minBallWidth) + ballManager.minBallWidth;
 
 			// Create a new instance of the ball, at the point in space 'Radius' distance away at 'Angle' angle
-			var newBall = new ball(ballID, spawnLocation.x, spawnLocation.y, ballWidth, "#000000", angleToCenter);
+			var newBall = new ball(ballID, spawnLocation.x, spawnLocation.y, ballWidth, graphics.GetRandomColor(), angleToCenter);
 
 			// Nudge the ball toward the center
 			physics.ApplyImpulseToBody(newBall.body, Math.random() * 3 + 2, angleToCenter);
@@ -117,5 +117,4 @@ var ballManager = {
 			});
 		}
 	}
-
 };

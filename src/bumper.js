@@ -19,25 +19,25 @@ var bumper = {
 		bumper.segments[0] = {
 			length: 0.2,
 			offset: 0.25,
-			color: "#000000",
+			color: graphics.GetRandomColor(),
 			lineWdith: 10
 		};
 		bumper.segments[1] = {
 			length: 0.2,
 			offset: 0.75,
-			color: "#FF0000",
+			color: graphics.GetRandomColor(),
 			lineWdith: 10
 		};
 		bumper.segments[2] = {
 			length: 0.2,
 			offset: 1.50,
-			color: "#000000",
+			color: graphics.GetRandomColor(),
 			lineWdith: 10
 		};
 		bumper.segments[3] = {
 			length: 0.2,
 			offset: 1.75,
-			color: "#FF0000",
+			color: graphics.GetRandomColor(),
 			lineWdith: 10
 		};
 	},

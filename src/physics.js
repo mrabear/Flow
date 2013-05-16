@@ -47,7 +47,7 @@ var physics = {
 		physics.standardFixture = new b2FixtureDef;
 		physics.standardFixture.density = 1.0;
 		physics.standardFixture.friction = 0.0;
-		physics.standardFixture.restitution = 0.8;
+		physics.standardFixture.restitution = 1.5;
 	},
 
 	// Increment the physics simulation by a single frame
@@ -78,6 +78,8 @@ var physics = {
 	SetBodyCanvasPosition: function(body, canvasPosition) {
 		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
 	},
+
+	
 
 	// Given two positions, Calculates the angle to a target
 	AngleToTarget: function(sourcePosition, targetPosition) {

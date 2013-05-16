@@ -31,7 +31,7 @@ var input = {
 		input.mousePosition = input.GetCanvasMouseCoords(eventData);
 
 		if ((input.mousePosition.x >= graphics.canvas.width - 85) && (input.mousePosition.x <= graphics.canvas.width - 10) && (input.mousePosition.y >= 10) && (input.mousePosition.y <= 30)) {
-			physics.visualizePhysics = !physics.visualizePhysics;
+			graphics.TogglePhysicsVisualization();
 		}
 	},
 
