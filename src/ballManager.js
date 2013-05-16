@@ -43,14 +43,19 @@ var ballManager = {
 	TranslateBallPositions: function(XOffset, YOffset) {
 		// The toal number of active balls (used for the for loop, cached in a var for performance reasons)
 		var ballTotal = ballManager.activeBalls.length;
+		var ballCanvasPosition = {};
 
 		// Loop through each ball and update it's position
 		for (var currentBall = 0; currentBall < ballTotal; currentBall++) {
+			ballCanvasPosition = physics.GetBodyCanvasPosition( ballManager.activeBalls[currentBall].body );
+
 			// If the ball is past the center X point, translate X position by XOffset
-			if (ballManager.activeBalls[currentBall].x > graphics.CenterPoint.x) ballManager.activeBalls[currentBall].x += XOffset;
+			if (ballCanvasPosition.x > graphics.centerPoint.x) ballCanvasPosition.x += XOffset;
 
 			// If the ball is past the center Y point, translate Y position by YOffset
-			if (ballManager.activeBalls[currentBall].y > graphics.CenterPoint.y) ballManager.activeBalls[currentBall].y += YOffset;
+			if (ballCanvasPosition.y > graphics.centerPoint.y) ballCanvasPosition.y += YOffset;
+
+			physics.SetBodyCanvasPosition(ballManager.activeBalls[currentBall].body, ballCanvasPosition);
 		}
 	}
 };

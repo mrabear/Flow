@@ -73,5 +73,17 @@ var physics = {
 		new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
 		Math.sin(angle * (Math.PI / 180)) * power),
 		body.GetWorldCenter());
-	}
+	},
+
+	GetBodyCanvasPosition: function(body) {
+		var bodyPosition = body.GetPosition();
+		return ({
+			x: bodyPosition.x * physics.scale,
+			y: bodyPosition.y * physics.scale
+		});
+	},
+
+	SetBodyCanvasPosition: function(body, canvasPosition) {
+		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
+	},
 };
