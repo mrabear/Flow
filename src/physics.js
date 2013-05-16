@@ -47,7 +47,7 @@ var physics = {
 		physics.standardFixture = new b2FixtureDef;
 		physics.standardFixture.density = 1.0;
 		physics.standardFixture.friction = 0.0;
-		physics.standardFixture.restitution = 1.0;
+		physics.standardFixture.restitution = 0.8;
 	},
 
 	// Increment the physics simulation by a single frame
@@ -59,8 +59,8 @@ var physics = {
 	// Apply an impulse force to the given body
 	ApplyImpulseToBody: function(body, power, angle) {
 		body.ApplyImpulse(
-		new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
-		Math.sin(angle * (Math.PI / 180)) * power),
+		new b2Vec2(Math.cos(angle) * power,
+		Math.sin(angle) * power),
 		body.GetWorldCenter());
 	},
 
@@ -78,4 +78,14 @@ var physics = {
 	SetBodyCanvasPosition: function(body, canvasPosition) {
 		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
 	},
+
+	// Given two positions, Calculates the angle to a target
+	AngleToTarget: function(sourcePosition, targetPosition) {
+		var deltaPosition = {
+			x: targetPosition.x - sourcePosition.x,
+			y: targetPosition.y - sourcePosition.y
+		};
+
+		return (Math.atan2(deltaPosition.y, deltaPosition.x));
+	}
 };

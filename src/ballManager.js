@@ -7,22 +7,47 @@ var ballManager = {
 	// The probability that a particular frame will spawn a ball
 	spawnProbability: 0.05,
 
+	// The minimum ball width
+	minBallWidth: 10,
+
+	// The maximum ball width
+	maxBallWidth: 20,
+
+	// The amount of drift allowed in the trajectory of the balls
+	targetingDrift: 0.1,
+
 	// Attempts to spawn a ball (will be successfull at ballManager.SpawnProbability rate)
 	SpawnBall: function() {
 		// Spawn a ball if the random number generator gets a hit
 		if (Math.random() < ballManager.spawnProbability) {
-			// Pick a random angle (relative to the center) to spawn the ball at
-			var angle = Math.random() * 360;
+			// Pick a random spawn point for the ball
+			var spawnLocation = ballManager.GetRandomSpawnPoint();
 
-			// Calculate the distance away (relative to the center at the 'Angle') that the ball needs to be spawned at
-			var radius = Math.max(graphics.centerPoint.x, graphics.centerPoint.y) + 30;
+			// Calculate the angle from the spawn point to the bumper in the center
+			var angleToCenter = physics.AngleToTarget({
+				x: spawnLocation.x,
+				y: spawnLocation.y
+			}, {
+				x: graphics.centerPoint.x,
+				y: graphics.centerPoint.y
+			})
+
+			// Add some drift to the angle, adds some variety in the motion of the balls
+			angleToCenter += angleToCenter * ballManager.targetingDrift * (( Math.random() * 2 ) - 1);
+
+			// Tag the ball with it's index
+			var ballID = ballManager.activeBalls.length + 1;
+
+			// Randomly calculate a ball width, prevents the balls from looking too uniform
+			var ballWidth = Math.random() * (ballManager.maxBallWidth - ballManager.minBallWidth) + ballManager.minBallWidth;
 
 			// Create a new instance of the ball, at the point in space 'Radius' distance away at 'Angle' angle
-			var newBall = new ball(ballManager.activeBalls.length + 1,
-			graphics.centerPoint.x + radius * Math.cos(angle), graphics.centerPoint.y + radius * Math.sin(angle), 20, "#000000");
+			var newBall = new ball(ballID, spawnLocation.x, spawnLocation.y, ballWidth, "#000000", angleToCenter);
 
-			physics.ApplyImpulseToBody(newBall.body, Math.random() * 3 + 13, Math.abs(180 - angle));
+			// Nudge the ball toward the center
+			physics.ApplyImpulseToBody(newBall.body, Math.random() * 3 + 2, angleToCenter);
 
+			// Add the ball to the active list
 			ballManager.activeBalls.push(newBall);
 		}
 	},
@@ -47,7 +72,7 @@ var ballManager = {
 
 		// Loop through each ball and update it's position
 		for (var currentBall = 0; currentBall < ballTotal; currentBall++) {
-			ballCanvasPosition = physics.GetBodyCanvasPosition( ballManager.activeBalls[currentBall].body );
+			ballCanvasPosition = physics.GetBodyCanvasPosition(ballManager.activeBalls[currentBall].body);
 
 			// If the ball is past the center X point, translate X position by XOffset
 			if (ballCanvasPosition.x > graphics.centerPoint.x) ballCanvasPosition.x += XOffset;
@@ -55,7 +80,42 @@ var ballManager = {
 			// If the ball is past the center Y point, translate Y position by YOffset
 			if (ballCanvasPosition.y > graphics.centerPoint.y) ballCanvasPosition.y += YOffset;
 
+			// Update the ball location
 			physics.SetBodyCanvasPosition(ballManager.activeBalls[currentBall].body, ballCanvasPosition);
 		}
+	},
+
+	// Calculates a random spawn point for a ball
+	// Legal spawn points are just off of the borders of the canvas on all four sides
+	GetRandomSpawnPoint: function() {
+		var edgeSelector = Math.floor(Math.random() * 4);
+		var spawnOffset = 0;
+
+		// Top border spawn
+		if (edgeSelector == 3) {
+			return ({
+				x: Math.random() * graphics.canvas.width,
+				y: -1 * ballManager.maxBallWidth + spawnOffset
+			});
+			// Right border spawn
+		} else if (edgeSelector == 2) {
+			return ({
+				x: graphics.canvas.width + ballManager.maxBallWidth - spawnOffset,
+				y: Math.random() * graphics.canvas.height
+			});
+			// Bottom border spawn
+		} else if (edgeSelector == 1) {
+			return ({
+				x: Math.random() * graphics.canvas.width,
+				y: graphics.canvas.height + ballManager.maxBallWidth - spawnOffset
+			});
+			// Left border spawn
+		} else {
+			return ({
+				x: -1 * ballManager.maxBallWidth + spawnOffset,
+				y: Math.random() * graphics.canvas.height
+			});
+		}
 	}
+
 };

@@ -8,11 +8,11 @@ var graphics = {
 	canvas: {},
 
 	// The aspect ratio to maintain while resizing the canvas
-	aspectRatio: 0.75,
+	aspectRatio: 1,
 
 	// The minimum size to maintain while resizing the canvas
 	minCanvasSize: {
-		width: 800,
+		width: 600,
 		height: 600
 	},
 
@@ -85,7 +85,7 @@ var graphics = {
 			// Calculate the new game surface dimensions, maximizing surface area while maintaining the aspect ratio defined by graphics.aspectRatio
 			canvasSize.width = Math.max(graphics.minCanvasSize.width, Math.round(
 			graphics.aspectRatio * document.width <= document.height ? document.width : Math.min(document.height / graphics.aspectRatio, document.width)));
-			canvasSize.height = Math.round(canvasSize.width * 0.75);
+			canvasSize.height = Math.round(canvasSize.width * graphics.aspectRatio);
 
 			// Translate the position of the balls so that their orientation on the resized game surface remains similar
 			ballManager.TranslateBallPositions(canvasSize.width - graphics.canvas.width, canvasSize.height - graphics.canvas.height);
