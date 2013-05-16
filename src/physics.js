@@ -23,51 +23,40 @@ var physics = {
 	// The pixel/km scale
 	scale: 30,
 
-	// Set to true to visualize the physics entities
-	visualizePhysics: true,
-
+	// The list of active physics bodies in the current simulation
 	bodies: [],
 
+	// The prototype dynamic physics fixture, used as a template for most objects
 	standardFixture: {},
 
+	// Initialize the physics world 
 	Initialize: function() {
 		// Create a test object
-		physics.world = new b2World(
-		new b2Vec2(0, 0) //gravity
-		,
-		true //allow sleep
-		);
+		physics.world = new b2World(new b2Vec2(0, 0), true);
 
-		if (physics.visualizePhysics) {
-			physics.visualization = new b2DebugDraw();
-			physics.visualization.SetSprite(graphics.drawingContext);
-			physics.visualization.SetDrawScale(physics.scale);
-			physics.visualization.SetFillAlpha(0.3);
-			physics.visualization.SetLineThickness(1.0);
-			physics.visualization.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-			physics.world.SetDebugDraw(physics.visualization);
-		}
+		// Setup the physics visualization layer
+		physics.visualization = new b2DebugDraw();
+		physics.visualization.SetSprite(graphics.drawingContext);
+		physics.visualization.SetDrawScale(physics.scale);
+		physics.visualization.SetFillAlpha(0.3);
+		physics.visualization.SetLineThickness(1.0);
+		physics.visualization.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+		physics.world.SetDebugDraw(physics.visualization);
 
+		// Build the prototype dynamic physics fixture
 		physics.standardFixture = new b2FixtureDef;
 		physics.standardFixture.density = 1.0;
 		physics.standardFixture.friction = 0.0;
 		physics.standardFixture.restitution = 1.0;
 	},
 
+	// Increment the physics simulation by a single frame
 	Step: function() {
-
-		physics.world.Step(
-		1 / 60 //frame-rate
-		,
-		10 //velocity iterations
-		,
-		10 //position iterations
-		);
-
-		physics.world.DrawDebugData();
+		physics.world.Step(1 / 60, 10, 10);
 		physics.world.ClearForces();
 	},
 
+	// Apply an impulse force to the given body
 	ApplyImpulseToBody: function(body, power, angle) {
 		body.ApplyImpulse(
 		new b2Vec2(Math.cos(angle * (Math.PI / 180)) * power,
@@ -75,6 +64,7 @@ var physics = {
 		body.GetWorldCenter());
 	},
 
+	// Get the canvas position of the given body
 	GetBodyCanvasPosition: function(body) {
 		var bodyPosition = body.GetPosition();
 		return ({
@@ -83,6 +73,8 @@ var physics = {
 		});
 	},
 
+	// Set the canvas position of the given body
+	// canvasPosition: The canvas-local destination coordinates 
 	SetBodyCanvasPosition: function(body, canvasPosition) {
 		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
 	},

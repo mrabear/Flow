@@ -28,6 +28,12 @@ var graphics = {
 		height: 0
 	},
 
+	// Set to true to visualize the physics entities
+	visualizePhysics: false,
+
+	// Set to true to visualize the physics entities
+	showDebugInfo: true,
+
 	// Initializes the graphics objects
 	Initialize: function() {
 
@@ -47,7 +53,7 @@ var graphics = {
 		graphics.ResizeCanvas();
 
 		// Draw the background graphics
-		//graphics.DrawBackground(graphics.drawingContext);
+		graphics.ClearCanvas(graphics.drawingContext);
 
 		// Draw the center bumpers
 		bumper.DrawBumperSegments(graphics.drawingContext);
@@ -55,8 +61,15 @@ var graphics = {
 		// Draw the balls and update the position of existing balls
 		ballManager.DrawBalls(graphics.drawingContext);
 
+		// If the visualizePhysics flag is set, overwrite the canvas with the current physics simulation state (used to debug physics events)
+		if (physics.visualizePhysics) {
+			physics.world.DrawDebugData();
+		}
+
 		// Draw any debug messages
-		graphics.DrawDebugMessages(graphics.drawingContext);
+		if (graphics.showDebugInfo) {
+			graphics.DrawDebugMessages(graphics.drawingContext);
+		}
 	},
 
 	// Resizes the canvas to maximize it in the browser window
@@ -88,10 +101,9 @@ var graphics = {
 	},
 
 	// Draw the background images
-	DrawBackground: function(drawingContext) {
+	ClearCanvas: function(drawingContext) {
 		// inner game surface color
-		drawingContext.fillStyle = "#FFFFFF";
-		drawingContext.fillRect(0, 0, graphics.canvas.width, graphics.canvas.height);
+		drawingContext.clearRect(0, 0, graphics.canvas.width, graphics.canvas.height);
 	},
 
 	// Draw debug messages
@@ -102,5 +114,10 @@ var graphics = {
 		drawingContext.fillText("Canvas: " + graphics.canvas.width + " x " + graphics.canvas.height, 10, 30);
 		drawingContext.fillText("Document: " + document.width + " x " + document.height, 10, 45);
 		drawingContext.fillText("Active Physics Objects: " + physics.world.GetBodyCount(), 10, 60);
+
+		drawingContext.lineWidth = 3;
+		drawingContext.strokeStyle = "#000000";
+		drawingContext.strokeRect(graphics.canvas.width - 85, 10, 75, 20);
+		drawingContext.fillText("Physics Viz", graphics.canvas.width - 80, 25);
 	}
 };
