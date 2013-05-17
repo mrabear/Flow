@@ -50,23 +50,7 @@ var physics = {
 		physics.standardFixture.friction = 0.0;
 		physics.standardFixture.restitution = 1.5;
 
-		var sensorFixture = new b2FixtureDef;
-		sensorFixture.isSensor = true;
-		sensorFixture.shape = new b2PolygonShape();
-		sensorFixture.shape.SetAsBox(100 / physics.scale, 100 / physics.scale);
-
-		var sensorBodyDef = new b2BodyDef;
-		sensorBodyDef.type = b2Body.b2_staticBody;
-
-		// positions the center of the object (not upper left!)
-		sensorBodyDef.position.x = graphics.centerPoint.x / physics.scale;
-		sensorBodyDef.position.y = graphics.centerPoint.y / physics.scale;
-
-		var sensorBody = physics.world.CreateBody(sensorBodyDef);
-		sensorBody.CreateFixture(sensorFixture);
-
-		// Add the sensor to the entity list
-		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
+		physics.SetupBoundarySensors();
 	},
 
 	// Increment the physics simulation by a single frame
@@ -109,6 +93,51 @@ var physics = {
 		// Returns the angle to the target
 		return (Math.atan2(deltaPosition.y, deltaPosition.x));
 	},
+
+	// Create boundary sensors just beyond the edge of the physics simulation
+	// This is primarily used to detect and remove physics bodies that have left the game world
+	SetupBoundarySensors: function() {
+		// Create the sensor fixture template
+		var sensorFixture = new b2FixtureDef;
+		sensorFixture.isSensor = true;
+		sensorFixture.shape = new b2PolygonShape();
+
+		// Create the physics body definition
+		var sensorBodyDef = new b2BodyDef;
+		sensorBodyDef.type = b2Body.b2_staticBody;
+
+		// Center the body to the middle of the canvas
+		sensorBodyDef.position.x = graphics.centerPoint.x / physics.scale;
+		sensorBodyDef.position.y = graphics.centerPoint.y / physics.scale;
+
+		// Create the sensor physics body
+		var sensorBody = physics.world.CreateBody(sensorBodyDef);
+
+		// Calculate the dimensions of the boundary sensors
+		var boundaryHeight = graphics.canvas.height * 1.5 / physics.scale;
+		var boundaryWidth = graphics.canvas.width * 1.5 / physics.scale;
+		var boundarySmallDim = 10 / physics.scale;
+		var boundaryDistanceFromEdge = 250 / physics.scale;
+
+		// Attach the right boundary sensor
+		sensorFixture.shape.SetAsOrientedBox(boundarySmallDim, boundaryHeight, new b2Vec2((graphics.centerPoint.x / physics.scale + boundaryDistanceFromEdge), 0), 0);
+		sensorBody.CreateFixture(sensorFixture);
+
+		// Attach the top boundary sensor
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundarySmallDim, new b2Vec2(0, (-1 * graphics.centerPoint.y / physics.scale - boundaryDistanceFromEdge)), Math.PI);
+		sensorBody.CreateFixture(sensorFixture);
+
+		// Attach the left boundary sensor
+		sensorFixture.shape.SetAsOrientedBox(boundarySmallDim, boundaryHeight, new b2Vec2((-1 * graphics.centerPoint.x / physics.scale - boundaryDistanceFromEdge), 0), 0);
+		sensorBody.CreateFixture(sensorFixture);
+
+		// Attach the bottom boundary sensor
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundarySmallDim, new b2Vec2(0, (graphics.centerPoint.y / physics.scale + boundaryDistanceFromEdge)), 0);
+		sensorBody.CreateFixture(sensorFixture);
+
+		// Add the sensor body to the entity list
+		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
+	}
 };
 
 // Called whenver there is contact between two physics objects

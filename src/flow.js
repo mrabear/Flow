@@ -6,14 +6,14 @@ var flow = {
 		// Initialize the graphics objects
 		graphics.Initialize();
 
+		// Initialize the physics world
+		physics.Initialize();
+
 		// Build the bumpers
 		bumper.Initialize();
 
 		// Register the input handlers
 		input.Initialize();
-
-		// Initialize the physics world
-		physics.Initialize();
 
 		// Start the game loop
 		flow.ProcessGameLoop();

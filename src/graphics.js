@@ -126,7 +126,7 @@ var graphics = {
 		graphics.drawingContext.globalAlpha = 1;
 		drawingContext.font = "bold 12px sans-serif";
 		drawingContext.fillStyle = "#000000";
-		drawingContext.fillText("Bumper Angle: " + bumper.angle + " (" + input.isMouseDown + ")", 10, 15);
+		drawingContext.fillText("Bumper Angle: " + Math.round(bumper.angle * 100)/100 + " (" + input.isMouseDown + ")", 10, 15);
 		drawingContext.fillText("Canvas: " + graphics.canvas.width + " x " + graphics.canvas.height, 10, 30);
 		drawingContext.fillText("Document: " + document.width + " x " + document.height, 10, 45);
 		drawingContext.fillText("Active Physics Objects: " + physics.world.GetBodyCount(), 10, 60);

@@ -11,6 +11,23 @@ var bumper = {
 	// Builds the bumper objects and readies them for the game
 	Initialize: function() {
 		bumper.BuildBumperSegments();
+
+		// TEMPORARY PHYSICS BODY, NEED TO SEGMENTIZE IT
+		// Create the body definition
+		var bodyDefinition = new b2BodyDef;
+		bodyDefinition.type = b2Body.b2_staticBody;
+		bodyDefinition.position.x = graphics.centerPoint.x / physics.scale;
+		bodyDefinition.position.y = graphics.centerPoint.y / physics.scale;
+
+		// Create a physics body out of the definition
+		var body = physics.world.CreateBody(bodyDefinition);
+
+		// Apply a circular bounding box to the body (used for hit detection)
+		physics.standardFixture.shape = new b2CircleShape(graphics.canvas.width * 0.1 / physics.scale);
+		body.CreateFixture(physics.standardFixture);
+		// Add the sensor body to the entity list
+		entityManager.AddEntity(entityManager.types.bumper, body, null);
+
 	},
 
 	// Build an array of bumpers for the player to use
