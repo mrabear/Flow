@@ -74,10 +74,10 @@ var graphics = {
 		bumper.DrawBumperSegments(graphics.drawingContext);
 
 		for (var currentEntity in entityManager.entities) {
-			if (entityManager.entities[currentEntity].type == entityManager.types.ball) {
+			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
 				// Draw the balls and update the position of existing balls
 				//ballManager.DrawBalls(graphics.drawingContext);
-				entityManager.entities[currentEntity].graphicsDef.draw(graphics.drawingContext);
+				entityManager.GetEntity(currentEntity).graphicsDef.Draw(graphics.drawingContext);
 			}
 		}
 

@@ -18,15 +18,10 @@ var physics = {
 	world: {},
 
 	// The physics visualization layer
-	visualization: {},
+	visualizationLayer: {},
 
 	// The pixel/km scale
 	scale: 30,
-
-	// The list of active physics bodies in the current simulation
-	bodies: [],
-
-	bodiesToDelete: [],
 
 	// The prototype dynamic physics fixture, used as a template for most objects
 	standardFixture: {},
@@ -41,13 +36,13 @@ var physics = {
 		physics.world.SetContactListener(physics.contactListener);
 
 		// Setup the physics visualization layer
-		physics.visualization = new b2DebugDraw();
-		physics.visualization.SetSprite(graphics.drawingContext);
-		physics.visualization.SetDrawScale(physics.scale);
-		physics.visualization.SetFillAlpha(0.3);
-		physics.visualization.SetLineThickness(1.0);
-		physics.visualization.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-		physics.world.SetDebugDraw(physics.visualization);
+		physics.visualizationLayer = new b2DebugDraw();
+		physics.visualizationLayer.SetSprite(graphics.drawingContext);
+		physics.visualizationLayer.SetDrawScale(physics.scale);
+		physics.visualizationLayer.SetFillAlpha(0.3);
+		physics.visualizationLayer.SetLineThickness(1.0);
+		physics.visualizationLayer.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+		physics.world.SetDebugDraw(physics.visualizationLayer);
 
 		// Build the prototype dynamic physics fixture
 		physics.standardFixture = new b2FixtureDef;
@@ -60,14 +55,15 @@ var physics = {
 		sensorFixture.shape = new b2PolygonShape();
 		sensorFixture.shape.SetAsBox(100 / physics.scale, 100 / physics.scale);
 
-		var sensorBody = new b2BodyDef;
-		sensorBody.type = b2Body.b2_staticBody;
-		//sensorBody.userData = physics.bodyTypes.boundry;
+		var sensorBodyDef = new b2BodyDef;
+		sensorBodyDef.type = b2Body.b2_staticBody;
 
 		// positions the center of the object (not upper left!)
-		sensorBody.position.x = graphics.centerPoint.x / physics.scale;
-		sensorBody.position.y = graphics.centerPoint.y / physics.scale;
-		physics.world.CreateBody(sensorBody).CreateFixture(sensorFixture);
+		sensorBodyDef.position.x = graphics.centerPoint.x / physics.scale;
+		sensorBodyDef.position.y = graphics.centerPoint.y / physics.scale;
+
+		var sensorBody = physics.world.CreateBody(sensorBodyDef);
+		sensorBody.CreateFixture(sensorFixture);
 
 		// Add the sensor to the entity list
 		entityManager.AddEntity(entityManager.types.boundry, sensorBody, null);
@@ -104,30 +100,30 @@ var physics = {
 
 	// Given two positions, Calculates the angle to a target
 	AngleToTarget: function(sourcePosition, targetPosition) {
+		// Calculates the difference between the two given points
 		var deltaPosition = {
 			x: targetPosition.x - sourcePosition.x,
 			y: targetPosition.y - sourcePosition.y
 		};
 
+		// Returns the angle to the target
 		return (Math.atan2(deltaPosition.y, deltaPosition.x));
 	},
-
-	CleanUpBodies: function() {
-		var bodyTotal = physics.bodiesToDelete.length;
-
-		for( var currentBody = 0 ; currentBody < bodyTotal ; currentBody++ ){
-			physics.world.DestroyBody(physics.bodiesToDelete[currentBody]);
-		}
-		physics.bodiesToDelete = [];
-	}
 };
 
+// Called whenver there is contact between two physics objects
 physics.contactListener.BeginContact = function(contact) {
-	var bodyAType = contact.GetFixtureA().GetBody().GetUserData();
-	var bodyBType = contact.GetFixtureB().GetBody().GetUserData();
+	// Get the entity IDs of the two colliding bodies
+	var bodyAEntityID = contact.GetFixtureA().GetBody().GetUserData();
+	var bodyBEntityID = contact.GetFixtureB().GetBody().GetUserData();
 
+	// Determine the type of the two objects
+	var bodyAType = entityManager.GetEntity(bodyAEntityID).type;
+	var bodyBType = entityManager.GetEntity(bodyBEntityID).type;
+
+	// If the object strcuk a boundry, schedule it for deletion
 	if ((bodyAType == entityManager.types.boundry) || (bodyAType == entityManager.types.boundry)) {
-		if (bodyAType == physics.bodyTypes.ball) entityManager.entities( bodyAType + "" ).type = entityManager.types.remove;
-		if (bodyBType == physics.bodyTypes.ball) entityManager.entities( bodyBType + "" ).type = entityManager.types.remove;
+		if (bodyAType == entityManager.types.ball) entityManager.GetEntity(bodyAEntityID).type = entityManager.types.remove;
+		if (bodyBType == entityManager.types.ball) entityManager.GetEntity(bodyBEntityID).type = entityManager.types.remove;
 	}
 }

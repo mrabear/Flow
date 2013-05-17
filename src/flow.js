@@ -34,6 +34,7 @@ var flow = {
 		// Render the next graphics frame
 		graphics.RenderFrame();
 
+		// Clean up entities that have been marked for removal
 		entityManager.CleanUpEntities();
 	}
 };

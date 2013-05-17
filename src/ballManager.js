@@ -1,11 +1,8 @@
 // src.ballManager.js
 // The collection of balls that spawn randomly and try to attack the player
 var ballManager = {
-	// The list of ball instances
-	//activeBalls: [],
-
 	// The probability that a particular frame will spawn a ball
-	spawnProbability: 0.25,
+	spawnProbability: 0.05,
 
 	// The minimum ball width
 	minBallWidth: 10,
@@ -39,27 +36,16 @@ var ballManager = {
 			var ballWidth = Math.random() * (ballManager.maxBallWidth - ballManager.minBallWidth) + ballManager.minBallWidth;
 
 			// Create a new instance of the ball, at the point in space 'Radius' distance away at 'Angle' angle
-			var newBall = new ball(entityManager.types.ball, spawnLocation.x, spawnLocation.y, ballWidth, graphics.GetRandomColor(), angleToCenter);
+			var newBall = new ball(spawnLocation.x, spawnLocation.y, ballWidth, graphics.GetRandomColor(), angleToCenter);
 
 			// Add the ball to the active list
 			//ballManager.activeBalls.push(newBall);
 			var entityID = entityManager.AddEntity(entityManager.types.ball, newBall.CreatePhysicsBody(), newBall);
 
 			// Nudge the ball toward the center
-			physics.ApplyImpulseToBody(entityManager.entities[entityID].physicsBody, Math.random() * 3 + 2, angleToCenter);
+			physics.ApplyImpulseToBody(entityManager.GetEntity(entityID).physicsBody, Math.random() * 3 + 2, angleToCenter);
 		}
 	},
-
-	// Update the position of and draw all of the currently active balls
-	/*DrawBalls: function(drawingContext) {
-		// The toal number of active balls (used for the for loop, cached in a var for performance reasons)
-		var ballTotal = ballManager.activeBalls.length;
-
-		// Loop through each active ball, update it's position, and draw it
-		for (var currentBall = 0; currentBall < ballTotal; currentBall++) {
-			ballManager.activeBalls[currentBall].draw(drawingContext);
-		}
-	},*/
 
 	// Called when the canvas is resized, adjusts the position of every active ball 
 	// so that the game board feels similar to the player
@@ -70,8 +56,8 @@ var ballManager = {
 
 		// Loop through each ball and update it's position
 		for (var currentEntity in entityManager.entities) {
-			if (currentEntity.type = entityManager.types.ball) {
-				ballCanvasPosition = physics.GetBodyCanvasPosition(currentEntity.physicsBody);
+			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
+				ballCanvasPosition = physics.GetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody);
 
 				// If the ball is past the center X point, translate X position by XOffset
 				if (ballCanvasPosition.x > graphics.centerPoint.x) ballCanvasPosition.x += XOffset;
@@ -80,7 +66,7 @@ var ballManager = {
 				if (ballCanvasPosition.y > graphics.centerPoint.y) ballCanvasPosition.y += YOffset;
 
 				// Update the ball location
-				physics.SetBodyCanvasPosition(currentEntity.physicsBody, ballCanvasPosition);
+				physics.SetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody, ballCanvasPosition);
 			}
 		}
 	},
