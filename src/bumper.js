@@ -10,7 +10,6 @@ var bumper = {
 
 	// Builds the bumper objects and readies them for the game
 	Initialize: function() {
-
 		bumper.BuildBumperSegments();
 	},
 
