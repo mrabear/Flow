@@ -114,25 +114,24 @@ var physics = {
 		var sensorBody = physics.world.CreateBody(sensorBodyDef);
 
 		// Calculate the dimensions of the boundary sensors
-		var boundaryHeight = graphics.canvas.height * 1.5 / physics.scale;
-		var boundaryWidth = graphics.canvas.width * 1.5 / physics.scale;
-		var boundarySmallDim = 10 / physics.scale;
+		var boundaryHeight = Math.max( graphics.canvas.height, graphics.canvas.width ) * 1.5 / physics.scale;
+		var boundaryWidth = 10 / physics.scale;
 		var boundaryDistanceFromEdge = 250 / physics.scale;
 
 		// Attach the right boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundarySmallDim, boundaryHeight, new b2Vec2((graphics.centerPoint.x / physics.scale + boundaryDistanceFromEdge), 0), 0);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((graphics.centerPoint.x / physics.scale + boundaryDistanceFromEdge), 0), 0);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the top boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundarySmallDim, new b2Vec2(0, (-1 * graphics.centerPoint.y / physics.scale - boundaryDistanceFromEdge)), Math.PI);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (-1 * graphics.centerPoint.y / physics.scale - boundaryDistanceFromEdge)), Math.PI / 2);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the left boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundarySmallDim, boundaryHeight, new b2Vec2((-1 * graphics.centerPoint.x / physics.scale - boundaryDistanceFromEdge), 0), 0);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((-1 * graphics.centerPoint.x / physics.scale - boundaryDistanceFromEdge), 0), 0);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the bottom boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundarySmallDim, new b2Vec2(0, (graphics.centerPoint.y / physics.scale + boundaryDistanceFromEdge)), 0);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (graphics.centerPoint.y / physics.scale + boundaryDistanceFromEdge)), Math.PI / 2);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Add the sensor body to the entity list
