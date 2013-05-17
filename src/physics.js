@@ -1,5 +1,4 @@
 // src.physics.js
-// Contains the physics implementation of the game world
 
 // Shortcuts for the Box2dWeb libraries
 var b2Vec2 = Box2D.Common.Math.b2Vec2;
@@ -13,6 +12,8 @@ var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
+// Class: Physics
+// Contains the physics implementation of the game world
 var physics = {
 	// The physics world simulation
 	world: {},
@@ -115,7 +116,7 @@ var physics = {
 		var sensorBody = physics.world.CreateBody(sensorBodyDef);
 
 		// Calculate the dimensions of the boundary sensors
-		var boundaryHeight = Math.max( graphics.canvas.height, graphics.canvas.width ) * 1.5 / physics.scale;
+		var boundaryHeight = Math.max(graphics.canvas.height, graphics.canvas.width) * 1.5 / physics.scale;
 		var boundaryWidth = 10 / physics.scale;
 		var boundaryDistanceFromEdge = 250 / physics.scale;
 

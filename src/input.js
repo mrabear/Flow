@@ -1,4 +1,5 @@
 // src.input.js
+// Class: input
 // Handles mouse and touch input
 var input = {
 	// The current position of the mouse (used to track mouse position changes while dragging)

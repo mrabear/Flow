@@ -1,4 +1,5 @@
 // src.bumper.js
+// Class: bumper
 // The bumper at the center of the screen, controlled by the player
 var bumper = {
 

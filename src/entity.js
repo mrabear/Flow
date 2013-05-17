@@ -1,4 +1,6 @@
 // src.entity.js
+
+// Class: entity
 // Entities are the parent container for all game objects they combine the physics and graphics components together
 // to make coordination between them much easier
 
@@ -9,6 +11,7 @@ function entity(id, type, physicsBody, graphicsDef) {
 	this.graphicsDef = graphicsDef;
 };
 
+// Helper Class: entityManager
 // Manages all of the active entries and has methods for working with entities
 var entityManager = {
 	// The list of all entities

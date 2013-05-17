@@ -1,4 +1,6 @@
 // src.ball.js
+
+// Class: ball
 // A single instance of an attacking ball
 
 function ball(x, y, radius, color, angle) {
@@ -55,7 +57,7 @@ ball.prototype.Draw = function(drawingContext) {
 	drawingContext.fill();
 }
 
-// ballManager
+// Helper Class: ballManager
 // Methods used to manage the balls
 var ballManager = {
 	// The probability that a particular frame will spawn a ball

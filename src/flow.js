@@ -1,4 +1,5 @@
 // src.flow.js
+// Class: flow
 // The main entry point for the game, starts the main loop after the DOM is ready
 var flow = {
 	// Initializes the graphics, sound, input, and game objects
