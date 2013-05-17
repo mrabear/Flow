@@ -20,7 +20,8 @@ var physics = {
 	// The physics visualization layer
 	visualizationLayer: {},
 
-	// The pixel/km scale
+	// How many pixels to draw per meter in the physics simulation
+	// Used to convert from the canvas coordianate system (pixels) to the physics simulation system (meters)
 	scale: 30,
 
 	// The prototype dynamic physics fixture, used as a template for most objects
