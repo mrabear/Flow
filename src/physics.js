@@ -66,7 +66,7 @@ var physics = {
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Add the sensor to the entity list
-		entityManager.AddEntity(entityManager.types.boundry, sensorBody, null);
+		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
 	},
 
 	// Increment the physics simulation by a single frame
@@ -121,8 +121,8 @@ physics.contactListener.BeginContact = function(contact) {
 	var bodyAType = entityManager.GetEntity(bodyAEntityID).type;
 	var bodyBType = entityManager.GetEntity(bodyBEntityID).type;
 
-	// If the object strcuk a boundry, schedule it for deletion
-	if ((bodyAType == entityManager.types.boundry) || (bodyAType == entityManager.types.boundry)) {
+	// If the object strcuk a boundary, schedule it for deletion
+	if ((bodyAType == entityManager.types.boundary) || (bodyAType == entityManager.types.boundary)) {
 		if (bodyAType == entityManager.types.ball) entityManager.GetEntity(bodyAEntityID).type = entityManager.types.remove;
 		if (bodyBType == entityManager.types.ball) entityManager.GetEntity(bodyBEntityID).type = entityManager.types.remove;
 	}

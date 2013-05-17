@@ -20,7 +20,7 @@ var entityManager = {
 	// The list of all valid entity types
 	types: {
 		ball: "ball",
-		boundry: "boundry",
+		boundary: "boundary",
 		bumper: "bumper",
 		remove: "deleteMe"
 	},
