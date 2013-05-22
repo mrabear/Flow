@@ -72,5 +72,34 @@ var entityManager = {
 				delete(entityManager.entities[currentEntity]);
 			}
 		}
+	},
+
+	// Called when the canvas is resized, adjusts the position of every active ball 
+	// so that the game board feels similar to the player
+	TranslateEntityPositions: function(XOffset, YOffset) {
+		// The toal number of active balls (used for the for loop, cached in a var for performance reasons)
+		var entityCanvasPosition = {};
+
+		// Loop through each ball and update it's position
+		for (var currentEntity in entityManager.entities) {
+			// Translate the ball positions
+			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
+				entityCanvasPosition = physics.GetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody);
+
+				// If the ball is past the center X point, translate X position by XOffset
+				if (entityCanvasPosition.x > graphics.centerPoint.x) entityCanvasPosition.x += XOffset;
+
+				// If the ball is past the center Y point, translate Y position by YOffset
+				if (entityCanvasPosition.y > graphics.centerPoint.y) entityCanvasPosition.y += YOffset;
+
+				// Update the ball location
+				physics.SetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody, entityCanvasPosition);
+
+				// Recreate the sensor boundaries
+			} else if (entityManager.GetEntity(currentEntity).type == entityManager.types.boundary) {
+				entityManager.RemoveEntity(currentEntity);
+				physics.SetupBoundarySensors();
+			}
+		}
 	}
 };

@@ -64,9 +64,9 @@ var physics = {
 	// Apply an impulse force to the given body
 	ApplyImpulseToBody: function(body, power, angle) {
 		body.ApplyImpulse(
-		new b2Vec2(Math.cos(angle) * power,
-		Math.sin(angle) * power),
-		body.GetWorldCenter());
+			new b2Vec2(Math.cos(angle) * power,
+			Math.sin(angle) * power),
+			body.GetWorldCenter());
 	},
 
 	// Get the canvas position of the given body
@@ -138,6 +138,10 @@ var physics = {
 
 		// Add the sensor body to the entity list
 		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
+	},
+
+	CanvasCoordToPhysics: function(coordinate) {
+		return (coordinate / physics.scale);
 	}
 };
 

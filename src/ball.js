@@ -61,7 +61,7 @@ ball.prototype.Draw = function(drawingContext) {
 // Methods used to manage the balls
 var ballManager = {
 	// The probability that a particular frame will spawn a ball
-	spawnProbability: 0.05,
+	spawnProbability: 0.02,
 
 	// The minimum ball width
 	minBallWidth: 10,
@@ -103,30 +103,6 @@ var ballManager = {
 
 			// Nudge the ball toward the center
 			physics.ApplyImpulseToBody(entityManager.GetEntity(entityID).physicsBody, Math.random() * 3 + 2, angleToCenter);
-		}
-	},
-
-	// Called when the canvas is resized, adjusts the position of every active ball 
-	// so that the game board feels similar to the player
-	TranslateBallPositions: function(XOffset, YOffset) {
-		// The toal number of active balls (used for the for loop, cached in a var for performance reasons)
-		//var ballTotal = ballManager.activeBalls.length;
-		var ballCanvasPosition = {};
-
-		// Loop through each ball and update it's position
-		for (var currentEntity in entityManager.entities) {
-			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
-				ballCanvasPosition = physics.GetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody);
-
-				// If the ball is past the center X point, translate X position by XOffset
-				if (ballCanvasPosition.x > graphics.centerPoint.x) ballCanvasPosition.x += XOffset;
-
-				// If the ball is past the center Y point, translate Y position by YOffset
-				if (ballCanvasPosition.y > graphics.centerPoint.y) ballCanvasPosition.y += YOffset;
-
-				// Update the ball location
-				physics.SetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody, ballCanvasPosition);
-			}
 		}
 	},
 

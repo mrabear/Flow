@@ -30,7 +30,7 @@ var graphics = {
 		height: 0
 	},
 
-	colorList: ["#FF0000", "#000000"],
+	colorList: ["#FF0000", "#000000", "#00FF00", "#0000FF"],
 
 	// Set to true to visualize the physics entities
 	visualizePhysics: false,
@@ -94,6 +94,7 @@ var graphics = {
 		// Check to see if the screen has changed since the last time it was resized
 		if ((document.width != graphics.windowSize.width) || (document.height != graphics.windowSize.height)) {
 			var canvasSize = {};
+			var deltaX, deltaY;
 
 			// Save the new screen size
 			graphics.windowSize.width = document.width;
@@ -101,11 +102,11 @@ var graphics = {
 
 			// Calculate the new game surface dimensions, maximizing surface area while maintaining the aspect ratio defined by graphics.aspectRatio
 			canvasSize.width = Math.max(graphics.minCanvasSize.width, Math.round(
-			graphics.aspectRatio * document.width <= document.height ? document.width : Math.min(document.height / graphics.aspectRatio, document.width)));
+				graphics.aspectRatio * document.width <= document.height ? document.width : Math.min(document.height / graphics.aspectRatio, document.width)));
 			canvasSize.height = Math.round(canvasSize.width * graphics.aspectRatio);
 
-			// Translate the position of the balls so that their orientation on the resized game surface remains similar
-			ballManager.TranslateBallPositions(canvasSize.width - graphics.canvas.width, canvasSize.height - graphics.canvas.height);
+			var deltaX = canvasSize.width - graphics.canvas.width;
+			var deltaY = canvasSize.height - graphics.canvas.height;
 
 			// Resize the canvas
 			graphics.canvas.width = canvasSize.width;
@@ -114,6 +115,10 @@ var graphics = {
 			// Calculate the new canvas center point
 			graphics.centerPoint.x = Math.round(graphics.canvas.width / 2);
 			graphics.centerPoint.y = Math.round(graphics.canvas.height / 2);
+
+			// Translate the position of the all game entities so that their 
+			// orientation on the resized game surface remains similar
+			entityManager.TranslateEntityPositions(deltaX, deltaY);
 		}
 	},
 
