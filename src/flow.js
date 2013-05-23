@@ -11,7 +11,7 @@ var flow = {
 		physics.Initialize();
 
 		// Build the bumpers
-		bumper.Initialize();
+		bumperManager.Initialize();
 
 		// Register the input handlers
 		input.Initialize();

@@ -19,6 +19,7 @@ ball.prototype.CreatePhysicsBody = function() {
 	bodyDefinition.position.x = this.x / physics.scale;
 	bodyDefinition.position.y = this.y / physics.scale;
 	bodyDefinition.angle = this.angle;
+	//bodyDefinition.bullet = true;
 
 	// Create a physics body out of the definition
 	var body = physics.world.CreateBody(bodyDefinition);

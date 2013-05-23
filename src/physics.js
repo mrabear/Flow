@@ -25,6 +25,9 @@ var physics = {
 	// Used to convert from the canvas coordianate system (pixels) to the physics simulation system (meters)
 	scale: 30,
 
+	// The maximum number of vertex points allowed for a physics shape
+	maxVertexPoints: 8,
+
 	// The prototype dynamic physics fixture, used as a template for most objects
 	standardFixture: {},
 
@@ -34,6 +37,7 @@ var physics = {
 	Initialize: function() {
 		// Create a test object
 		physics.world = new b2World(new b2Vec2(0, 0), true);
+		//physics.world.SetContinuousPhysics(true);
 
 		physics.world.SetContactListener(physics.contactListener);
 
@@ -140,8 +144,8 @@ var physics = {
 		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
 	},
 
-	CanvasCoordToPhysics: function(coordinate) {
-		return (coordinate / physics.scale);
+	ScaleToPhysics: function(canvasCoordinate) {
+		return (canvasCoordinate / physics.scale);
 	}
 };
 

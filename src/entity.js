@@ -4,11 +4,11 @@
 // Entities are the parent container for all game objects they combine the physics and graphics components together
 // to make coordination between them much easier
 
-function entity(id, type, physicsBody, graphicsDef) {
+function entity(id, type, physicsBody, gameObject) {
 	this.id = id;
 	this.type = type;
 	this.physicsBody = physicsBody;
-	this.graphicsDef = graphicsDef;
+	this.gameObject = gameObject;
 };
 
 // Helper Class: entityManager
@@ -29,17 +29,17 @@ var entityManager = {
 	},
 
 	// Adds an entity to the active list, returns the ID of the newly created entity
-	AddEntity: function(type, physicsBody, graphicsDef) {
+	AddEntity: function(type, physicsBody, gameObject) {
 		// Create the new entity ID
 		var newID = entityManager.entityCount + "";
 
 		// Update the physics and graphics objects with the new ID
 		// This is a very important step and links the individual objects back to the associated entity
 		if (physicsBody != null) physicsBody.SetUserData(newID);
-		if (graphicsDef != null) graphicsDef.id = newID;
+		if (gameObject != null) gameObject.id = newID;
 
 		// Add the entity to the active list
-		entityManager.entities[newID] = new entity(newID, type, physicsBody, graphicsDef);
+		entityManager.entities[newID] = new entity(newID, type, physicsBody, gameObject);
 
 		// Increment the entity count to insure that the next entity is unique
 		entityManager.entityCount++;
@@ -81,10 +81,14 @@ var entityManager = {
 		var entityCanvasPosition = {};
 
 		// Loop through each ball and update it's position
-		for (var currentEntity in entityManager.entities) {
+		var currentEntity = {};
+		for (var currentEntityID in entityManager.entities) {
+			// Get the current entity from the entity manager
+			var currentEntity = entityManager.GetEntity(currentEntityID);
+
 			// Translate the ball positions
-			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
-				entityCanvasPosition = physics.GetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody);
+			if (currentEntity.type == entityManager.types.ball) {
+				entityCanvasPosition = physics.GetBodyCanvasPosition(currentEntity.physicsBody);
 
 				// If the ball is past the center X point, translate X position by XOffset
 				if (entityCanvasPosition.x > graphics.centerPoint.x) entityCanvasPosition.x += XOffset;
@@ -93,13 +97,21 @@ var entityManager = {
 				if (entityCanvasPosition.y > graphics.centerPoint.y) entityCanvasPosition.y += YOffset;
 
 				// Update the ball location
-				physics.SetBodyCanvasPosition(entityManager.GetEntity(currentEntity).physicsBody, entityCanvasPosition);
+				physics.SetBodyCanvasPosition(currentEntity.physicsBody, entityCanvasPosition);
 
+			} else if (currentEntity.type == entityManager.types.boundary) {
 				// Recreate the sensor boundaries
-			} else if (entityManager.GetEntity(currentEntity).type == entityManager.types.boundary) {
-				entityManager.RemoveEntity(currentEntity);
-				physics.SetupBoundarySensors();
+				entityManager.RemoveEntity(currentEntityID);
+
+			} else if (currentEntity.type == entityManager.types.bumper) {
+				entityManager.RemoveEntity(currentEntityID);
 			}
 		}
+
+		// Rebuild the boundary sensors
+		physics.SetupBoundarySensors();
+
+		// Rebuild the player bumpers
+		bumperManager.BuildBumpers();
 	}
 };

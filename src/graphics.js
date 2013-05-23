@@ -30,6 +30,7 @@ var graphics = {
 		height: 0
 	},
 
+	// The list of valid object colors
 	colorList: ["#FF0000", "#000000", "#00FF00", "#0000FF"],
 
 	// Set to true to visualize the physics entities
@@ -50,8 +51,11 @@ var graphics = {
 		// Get a handle to the 2d context of the canvas
 		graphics.drawingContext = graphics.canvas.getContext('2d');
 
+		// Turn physics visualizations on
+		graphics.TogglePhysicsVisualization();
+
 		// Resize the canvas to fit the browser window
-		graphics.ResizeCanvas();
+		//graphics.ResizeCanvas();
 	},
 
 	// Renders a single frame of game graphics
@@ -72,14 +76,21 @@ var graphics = {
 		// (will dim the subsequent graphics to allow the physics visualization to bleed through)
 		graphics.drawingContext.globalAlpha = graphics.alphaChannel;
 
-		// Draw the center bumpers
-		bumper.DrawBumperSegments(graphics.drawingContext);
+		// Loop through every active entity and perform the rendering tasks
+		var currentEntity = {};
+		for (var currentEntityID in entityManager.entities) {
+			// Get the current entity from the entity manager
+			currentEntity = entityManager.GetEntity(currentEntityID);
 
-		for (var currentEntity in entityManager.entities) {
-			if (entityManager.GetEntity(currentEntity).type == entityManager.types.ball) {
+			if (currentEntity.type == entityManager.types.ball) {
 				// Draw the balls and update the position of existing balls
-				//ballManager.DrawBalls(graphics.drawingContext);
-				entityManager.GetEntity(currentEntity).graphicsDef.Draw(graphics.drawingContext);
+				currentEntity.gameObject.Draw(graphics.drawingContext);
+			} else if (currentEntity.type == entityManager.types.bumper) {
+				// Update the bumper physics body angle
+				currentEntity.gameObject.UpdatePhysicsBody(currentEntity.physicsBody);
+
+				// Draw the bumper
+				currentEntity.gameObject.Draw(graphics.drawingContext);
 			}
 		}
 
@@ -133,7 +144,7 @@ var graphics = {
 		graphics.drawingContext.globalAlpha = 1;
 		drawingContext.font = "bold 12px sans-serif";
 		drawingContext.fillStyle = "#000000";
-		drawingContext.fillText("Bumper Angle: " + Math.round(bumper.angle * 100) / 100 + " (" + input.isMouseDown + ")", 10, 15);
+		drawingContext.fillText("Bumper Angle: " + Math.round(bumperManager.originAngle * 100) / 100 + " (" + input.isMouseDown + ")", 10, 15);
 		drawingContext.fillText("Canvas: " + graphics.canvas.width + " x " + graphics.canvas.height, 10, 30);
 		drawingContext.fillText("Document: " + document.width + " x " + document.height, 10, 45);
 		drawingContext.fillText("Active Physics Objects: " + physics.world.GetBodyCount(), 10, 60);

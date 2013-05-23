@@ -43,12 +43,7 @@ var input = {
 			var newMousePosition = input.GetCanvasMouseCoords(eventData);
 
 			// Move the bumper origin angle backwards or forwards depending on the direction of the mouse drag
-			bumper.angle = bumper.angle + (input.mousePosition.x - newMousePosition.x) * (1 / 250);
-
-			// If the bumper origin angle hits either 0*pi (~0 degrees) or 2*pi (~360 degrees), flip it around 
-			// (this lets the bumper continually spin as the player drags)
-			if (bumper.angle > 2) bumper.angle = 0;
-			else if (bumper.angle < 0) bumper.angle = 2;
+			bumperManager.UpdateOriginAngle(input.mousePosition.x - newMousePosition.x);
 
 			// Update the position of the mouse
 			input.mousePosition = newMousePosition;
