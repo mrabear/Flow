@@ -20,7 +20,7 @@ bumper.prototype.CreatePhysicsBody = function() {
 	bodyDefinition.type = b2Body.b2_staticBody;
 	bodyDefinition.position.x = physicsX;
 	bodyDefinition.position.y = physicsY;
-	bodyDefinition.angle = this.startAngle;
+	bodyDefinition.angle = (bumperManager.originAngle) * Math.PI;
 
 	// Create a physics body out of the definition
 	var body = physics.world.CreateBody(bodyDefinition);
@@ -101,9 +101,13 @@ var bumperManager = {
 	// The bumper orientation angle
 	originAngle: 0,
 
+	// List of bumper colors
+	bumperColorList: [graphics.GetRandomColor(),graphics.GetRandomColor(),graphics.GetRandomColor()],
+
 	// Builds the bumper objects and readies them for the game
 	Initialize: function() {
 		bumperManager.BuildBumpers();
+
 	},
 
 	// Build an array of bumpers for the player to use
@@ -111,15 +115,15 @@ var bumperManager = {
 		var currentBumper = {}
 
 		// Bumper 1
-		currentBumper = new bumper(0.00, 1.00, graphics.GetRandomColor(), 8);
+		currentBumper = new bumper(0.00, 1.00, bumperManager.bumperColorList[0], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 2
-		currentBumper = new bumper(1.50, 1.70, graphics.GetRandomColor(), 8);
+		currentBumper = new bumper(1.50, 1.70, bumperManager.bumperColorList[1], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 3
-		currentBumper = new bumper(1.75, 1.95, graphics.GetRandomColor(), 8);
+		currentBumper = new bumper(1.75, 1.95, bumperManager.bumperColorList[2], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 	},
 
