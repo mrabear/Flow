@@ -35,13 +35,13 @@ bumper.prototype.CreatePhysicsBody = function() {
 
 bumper.prototype.BuildPhysicsBodyShape = function() {
 	// Determine the total number of verticies needed for the bumper
-	var vertexCount = Math.min(physics.maxVertexPoints - 2, Math.floor((this.endAngle - this.startAngle) / 0.05) + 1);
+	var vertexCount = Math.min(physics.maxVertexPoints - 2, Math.floor((this.endAngle - this.startAngle) / bumperManager.vertexWidth) + 1);
 
 	// The list of verticies used to build the bumper
 	var vertexList = [];
 
 	// Calculate the radius of the bumper
-	var radius = physics.ScaleToPhysics(graphics.canvas.width * 0.1);
+	var radius = physics.ScaleToPhysics(graphics.canvas.width * bumperManager.widthRatio);
 
 	// Start the shape in the center of the physics body
 	vertexList.push(new b2Vec2(0, 0));
@@ -83,7 +83,7 @@ bumper.prototype.Draw = function(drawingContext) {
 	// Define the bumper segment based off of the previous calculations
 	drawingContext.arc(graphics.centerPoint.x,
 		graphics.centerPoint.y,
-		graphics.canvas.width * 0.1,
+		graphics.canvas.width * bumperManager.widthRatio,
 		orientedStartAngle * Math.PI,
 		orientedEndAngle * Math.PI, false);
 
@@ -100,6 +100,12 @@ bumper.prototype.Draw = function(drawingContext) {
 var bumperManager = {
 	// The bumper orientation angle
 	originAngle: 0,
+
+	// The percentage of the canvas width to use for the bumper diameter
+	widthRatio: 0.1,
+
+	// The width (in radians) of each segment of the bumper physics body
+	vertexWidth: 0.05,
 
 	// List of bumper colors
 	bumperColorList: [graphics.GetRandomColor(),graphics.GetRandomColor(),graphics.GetRandomColor()],
