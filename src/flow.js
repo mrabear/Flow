@@ -10,8 +10,12 @@ var flow = {
 		// Initialize the physics world
 		physics.Initialize();
 
-		// Build the bumpers
-		bumperManager.Initialize();
+		// Fit the physics and graphics objects to the browser
+		graphics.ResizeCanvas();
+
+		// Rebuild any objects that are purged during the resizing
+		// (e.g. physics objects that are locked and can't be modified)
+		flow.RebuildGameObjects();
 
 		// Register the input handlers
 		input.Initialize();
@@ -37,6 +41,18 @@ var flow = {
 
 		// Clean up entities that have been marked for removal
 		entityManager.CleanUpEntities();
+	},
+
+	// Rebuild the standard game objects
+	RebuildGameObjects: function() {
+		// Rebuild the boundary sensors
+		physics.SetupBoundarySensors();
+
+		// Rebuild the player bumpers
+		bumperManager.BuildBumpers();
+
+		// Rebuild the bases
+		baseManager.BuildBases();
 	}
 };
 

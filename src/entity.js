@@ -25,7 +25,8 @@ var entityManager = {
 		ball: "ball",
 		boundary: "boundary",
 		bumper: "bumper",
-		remove: "deleteMe"
+		remove: "deleteMe",
+		base: "base"
 	},
 
 	// Adds an entity to the active list, returns the ID of the newly created entity
@@ -105,13 +106,10 @@ var entityManager = {
 
 			} else if (currentEntity.type == entityManager.types.bumper) {
 				entityManager.RemoveEntity(currentEntityID);
+			} else if (currentEntity.type == entityManager.types.base) {
+				entityManager.RemoveEntity(currentEntityID);
 			}
+
 		}
-
-		// Rebuild the boundary sensors
-		physics.SetupBoundarySensors();
-
-		// Rebuild the player bumpers
-		bumperManager.BuildBumpers();
 	}
 };

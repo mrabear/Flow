@@ -77,15 +77,15 @@ var physics = {
 	GetBodyCanvasPosition: function(body) {
 		var bodyPosition = body.GetPosition();
 		return ({
-			x: bodyPosition.x * physics.scale,
-			y: bodyPosition.y * physics.scale
+			x: physics.PhysicsToCanvas(bodyPosition.x),
+			y: physics.PhysicsToCanvas(bodyPosition.y)
 		});
 	},
 
 	// Set the canvas position of the given body
 	// canvasPosition: The canvas-local destination coordinates 
 	SetBodyCanvasPosition: function(body, canvasPosition) {
-		body.SetPosition(new b2Vec2(canvasPosition.x / physics.scale, canvasPosition.y / physics.scale));
+		body.SetPosition(new b2Vec2(physics.CanvasToPhysics(canvasPosition.x), physics.CanvasToPhysics(canvasPosition.y)));
 	},
 
 	// Given two positions, Calculates the angle to a target
@@ -113,40 +113,45 @@ var physics = {
 		sensorBodyDef.type = b2Body.b2_staticBody;
 
 		// Center the body to the middle of the canvas
-		sensorBodyDef.position.x = graphics.centerPoint.x / physics.scale;
-		sensorBodyDef.position.y = graphics.centerPoint.y / physics.scale;
+		sensorBodyDef.position.x = physics.CanvasToPhysics(graphics.centerPoint.x);
+		sensorBodyDef.position.y = physics.CanvasToPhysics(graphics.centerPoint.y);
 
 		// Create the sensor physics body
 		var sensorBody = physics.world.CreateBody(sensorBodyDef);
 
 		// Calculate the dimensions of the boundary sensors
-		var boundaryHeight = Math.max(graphics.canvas.height, graphics.canvas.width) * 1.5 / physics.scale;
-		var boundaryWidth = 10 / physics.scale;
-		var boundaryDistanceFromEdge = 250 / physics.scale;
+		var boundaryHeight = physics.CanvasToPhysics(Math.max(graphics.canvas.height, graphics.canvas.width) * 1.5);
+		var boundaryWidth = physics.CanvasToPhysics(10);
+		var boundaryDistanceFromEdge = physics.CanvasToPhysics(250);
 
 		// Attach the right boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((graphics.centerPoint.x / physics.scale + boundaryDistanceFromEdge), 0), 0);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((physics.CanvasToPhysics(graphics.centerPoint.x) + boundaryDistanceFromEdge), 0), 0);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the top boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (-1 * graphics.centerPoint.y / physics.scale - boundaryDistanceFromEdge)), Math.PI / 2);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (physics.CanvasToPhysics(-1 * graphics.centerPoint.y) - boundaryDistanceFromEdge)), Math.PI / 2);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the left boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((-1 * graphics.centerPoint.x / physics.scale - boundaryDistanceFromEdge), 0), 0);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2((physics.CanvasToPhysics(-1 * graphics.centerPoint.x) - boundaryDistanceFromEdge), 0), 0);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Attach the bottom boundary sensor
-		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (graphics.centerPoint.y / physics.scale + boundaryDistanceFromEdge)), Math.PI / 2);
+		sensorFixture.shape.SetAsOrientedBox(boundaryWidth, boundaryHeight, new b2Vec2(0, (physics.CanvasToPhysics(graphics.centerPoint.y) + boundaryDistanceFromEdge)), Math.PI / 2);
 		sensorBody.CreateFixture(sensorFixture);
 
 		// Add the sensor body to the entity list
 		entityManager.AddEntity(entityManager.types.boundary, sensorBody, null);
 	},
 
-	ScaleToPhysics: function(canvasCoordinate) {
+	CanvasToPhysics: function(canvasCoordinate) {
 		return (canvasCoordinate / physics.scale);
+	},
+
+	PhysicsToCanvas: function(canvasCoordinate) {
+		return (canvasCoordinate * physics.scale);
 	}
+
 };
 
 // Called whenver there is contact between two physics objects
@@ -160,8 +165,11 @@ physics.contactListener.BeginContact = function(contact) {
 	var bodyBType = entityManager.GetEntity(bodyBEntityID).type;
 
 	// If the object strcuk a boundary, schedule it for deletion
-	if ((bodyAType == entityManager.types.boundary) || (bodyAType == entityManager.types.boundary)) {
+	if ((bodyAType == entityManager.types.boundary) || (bodyBType == entityManager.types.boundary)) {
 		if (bodyAType == entityManager.types.ball) entityManager.GetEntity(bodyAEntityID).type = entityManager.types.remove;
 		if (bodyBType == entityManager.types.ball) entityManager.GetEntity(bodyBEntityID).type = entityManager.types.remove;
+	} else if ((bodyAType == entityManager.types.base) || (bodyBType == entityManager.types.base)) {
+		if (bodyAType == entityManager.types.ball) entityManager.GetEntity(bodyAEntityID).type = entityManager.types.remove;
+		if (bodyBType == entityManager.types.ball) entityManager.GetEntity(bodyAEntityID).type = entityManager.types.remove;
 	}
 }

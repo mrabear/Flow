@@ -3,7 +3,9 @@
 // Class: bumper
 // A player bumper, used by the player to deflect balls
 
-function bumper(startAngle, endAngle, color, lineWidth) {
+function bumper(x, y, startAngle, endAngle, color, lineWidth) {
+	this.x = x;
+	this.y = y;
 	this.startAngle = startAngle;
 	this.endAngle = endAngle;
 	this.color = color;
@@ -12,8 +14,8 @@ function bumper(startAngle, endAngle, color, lineWidth) {
 
 // Create the physics body for this ball
 bumper.prototype.CreatePhysicsBody = function() {
-	var physicsX = physics.ScaleToPhysics(graphics.centerPoint.x);
-	var physicsY = physics.ScaleToPhysics(graphics.centerPoint.y);
+	var physicsX = physics.CanvasToPhysics(graphics.centerPoint.x);
+	var physicsY = physics.CanvasToPhysics(graphics.centerPoint.y);
 
 	// Create the body definition
 	var bodyDefinition = new b2BodyDef;
@@ -33,6 +35,7 @@ bumper.prototype.CreatePhysicsBody = function() {
 	return (body);
 };
 
+// Returns a physics polygon for the bumper
 bumper.prototype.BuildPhysicsBodyShape = function() {
 	// Determine the total number of verticies needed for the bumper
 	var vertexCount = Math.min(physics.maxVertexPoints - 2, Math.floor((this.endAngle - this.startAngle) / bumperManager.vertexWidth) + 1);
@@ -41,7 +44,7 @@ bumper.prototype.BuildPhysicsBodyShape = function() {
 	var vertexList = [];
 
 	// Calculate the radius of the bumper
-	var radius = physics.ScaleToPhysics(graphics.canvas.width * bumperManager.widthRatio);
+	var radius = physics.CanvasToPhysics(graphics.canvas.width * bumperManager.widthRatio);
 
 	// Start the shape in the center of the physics body
 	vertexList.push(new b2Vec2(0, 0));
@@ -63,6 +66,7 @@ bumper.prototype.BuildPhysicsBodyShape = function() {
 	return (bodyShape);
 }
 
+// Update the bumper physics body to match the current spin angle
 bumper.prototype.UpdatePhysicsBody = function(physicsBody) {
 	physicsBody.SetAngle(bumperManager.originAngle * Math.PI);
 }
@@ -81,8 +85,8 @@ bumper.prototype.Draw = function(drawingContext) {
 	drawingContext.beginPath();
 
 	// Define the bumper segment based off of the previous calculations
-	drawingContext.arc(graphics.centerPoint.x,
-		graphics.centerPoint.y,
+	drawingContext.arc(this.x,
+		this.y,
 		graphics.canvas.width * bumperManager.widthRatio,
 		orientedStartAngle * Math.PI,
 		orientedEndAngle * Math.PI, false);
@@ -108,12 +112,10 @@ var bumperManager = {
 	vertexWidth: 0.05,
 
 	// List of bumper colors
-	bumperColorList: [graphics.GetRandomColor(),graphics.GetRandomColor(),graphics.GetRandomColor()],
+	bumperColorList: [graphics.GetRandomColor(), graphics.GetRandomColor(), graphics.GetRandomColor()],
 
 	// Builds the bumper objects and readies them for the game
 	Initialize: function() {
-		bumperManager.BuildBumpers();
-
 	},
 
 	// Build an array of bumpers for the player to use
@@ -121,15 +123,15 @@ var bumperManager = {
 		var currentBumper = {}
 
 		// Bumper 1
-		currentBumper = new bumper(0.00, 1.00, bumperManager.bumperColorList[0], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 0.00, 1.00, bumperManager.bumperColorList[0], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 2
-		currentBumper = new bumper(1.50, 1.70, bumperManager.bumperColorList[1], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.50, 1.70, bumperManager.bumperColorList[1], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 3
-		currentBumper = new bumper(1.75, 1.95, bumperManager.bumperColorList[2], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.75, 1.95, bumperManager.bumperColorList[2], 8);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 	},
 

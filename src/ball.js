@@ -16,8 +16,8 @@ ball.prototype.CreatePhysicsBody = function() {
 	// Create the body definition
 	var bodyDefinition = new b2BodyDef;
 	bodyDefinition.type = b2Body.b2_dynamicBody;
-	bodyDefinition.position.x = this.x / physics.scale;
-	bodyDefinition.position.y = this.y / physics.scale;
+	bodyDefinition.position.x = physics.CanvasToPhysics(this.x);
+	bodyDefinition.position.y = physics.CanvasToPhysics(this.y);
 	bodyDefinition.angle = this.angle;
 	//bodyDefinition.bullet = true;
 
@@ -25,7 +25,7 @@ ball.prototype.CreatePhysicsBody = function() {
 	var body = physics.world.CreateBody(bodyDefinition);
 
 	// Apply a circular bounding box to the body (used for hit detection)
-	physics.standardFixture.shape = new b2CircleShape(this.radius / physics.scale);
+	physics.standardFixture.shape = new b2CircleShape(physics.CanvasToPhysics(this.radius));
 	body.CreateFixture(physics.standardFixture);
 
 	// Return the newly created physics body
@@ -38,8 +38,8 @@ ball.prototype.Draw = function(drawingContext) {
 	drawingContext.beginPath();
 
 	// Update the position of the ball
-	this.x = entityManager.GetEntity(this.id).physicsBody.GetPosition().x * physics.scale;
-	this.y = entityManager.GetEntity(this.id).physicsBody.GetPosition().y * physics.scale;
+	this.x = physics.PhysicsToCanvas(entityManager.GetEntity(this.id).physicsBody.GetPosition().x);
+	this.y = physics.PhysicsToCanvas(entityManager.GetEntity(this.id).physicsBody.GetPosition().y);
 
 	// Draw the ball onto the screen
 	drawingContext.arc(this.x, this.y, this.radius, 0 * Math.PI, 2 * Math.PI, false);

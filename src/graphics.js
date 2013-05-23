@@ -31,7 +31,7 @@ var graphics = {
 	},
 
 	// The list of valid object colors
-	colorList: ["#FF0000", "#000000", "#00FF00", "#0000FF"],
+	colorList: ["#FF0000", "#00FF00", "#0000FF"],
 
 	// Set to true to visualize the physics entities
 	visualizePhysics: false,
@@ -53,15 +53,15 @@ var graphics = {
 
 		// Turn physics visualizations on
 		graphics.TogglePhysicsVisualization();
-
-		// Resize the canvas to fit the browser window
-		//graphics.ResizeCanvas();
 	},
 
 	// Renders a single frame of game graphics
 	RenderFrame: function() {
-		// Resize the canvas (if the browser has been resized)
-		graphics.ResizeCanvas();
+		// Resize the canvas (if the browser has been resized),
+		if( graphics.ResizeCanvas() ){
+			// If the browser was resized, rebuild any game objects that were purged
+			flow.RebuildGameObjects();
+		}
 
 		// Clear the canvas
 		graphics.ClearCanvas(graphics.drawingContext);
@@ -90,6 +90,9 @@ var graphics = {
 				currentEntity.gameObject.UpdatePhysicsBody(currentEntity.physicsBody);
 
 				// Draw the bumper
+				currentEntity.gameObject.Draw(graphics.drawingContext);
+			} else if (currentEntity.type == entityManager.types.base) {
+				// Draw the base
 				currentEntity.gameObject.Draw(graphics.drawingContext);
 			}
 		}
@@ -130,7 +133,11 @@ var graphics = {
 			// Translate the position of the all game entities so that their 
 			// orientation on the resized game surface remains similar
 			entityManager.TranslateEntityPositions(deltaX, deltaY);
+
+			return (true);
 		}
+
+		return (false);
 	},
 
 	// Draw the background images
