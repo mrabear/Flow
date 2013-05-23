@@ -115,8 +115,7 @@ var bumperManager = {
 	bumperColorList: [graphics.GetRandomColor(), graphics.GetRandomColor(), graphics.GetRandomColor()],
 
 	// Builds the bumper objects and readies them for the game
-	Initialize: function() {
-	},
+	Initialize: function() {},
 
 	// Build an array of bumpers for the player to use
 	BuildBumpers: function() {

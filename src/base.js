@@ -62,13 +62,12 @@ var baseManager = {
 	// The percentage of the canvas width to use for the base diameter
 	widthRatio: 0.05,
 
-	Initialize: function(){
-	},
+	Initialize: function() {},
 
 	// Build new instances of the game bases
-	BuildBases: function(){
+	BuildBases: function() {
 		// Base 1
 		var currentBase = new base(graphics.centerPoint.x, graphics.centerPoint.y, graphics.canvas.width * baseManager.widthRatio, "#000000");
-		entityManager.AddEntity(entityManager.types.base, currentBase.CreatePhysicsBody(), currentBase);		
+		entityManager.AddEntity(entityManager.types.base, currentBase.CreatePhysicsBody(), currentBase);
 	}
 };

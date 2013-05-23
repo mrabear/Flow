@@ -58,7 +58,7 @@ var graphics = {
 	// Renders a single frame of game graphics
 	RenderFrame: function() {
 		// Resize the canvas (if the browser has been resized),
-		if( graphics.ResizeCanvas() ){
+		if (graphics.ResizeCanvas()) {
 			// If the browser was resized, rebuild any game objects that were purged
 			flow.RebuildGameObjects();
 		}
