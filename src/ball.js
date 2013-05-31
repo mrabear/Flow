@@ -25,7 +25,7 @@ ball.prototype.CreatePhysicsBody = function() {
 	var body = physics.world.CreateBody(bodyDefinition);
 
 	// Apply a circular bounding box to the body (used for hit detection)
-	physics.standardFixture.shape = new b2CircleShape(physics.CanvasToPhysics(this.radius));
+	physics.standardFixture.shape = new b2CircleShape(physics.CanvasToPhysics(this.radius + ballManager.physicsBorderPadding));
 	body.CreateFixture(physics.standardFixture);
 
 	// Return the newly created physics body
@@ -45,7 +45,7 @@ ball.prototype.Draw = function(drawingContext) {
 	drawingContext.arc(this.x, this.y, this.radius, 0 * Math.PI, 2 * Math.PI, false);
 
 	// Set the line width and color
-	drawingContext.lineWidth = 3;
+	drawingContext.lineWidth = ballManager.borderWidth;
 	drawingContext.strokeStyle = "#000000";
 
 	// Draw the ball
@@ -70,6 +70,13 @@ var ballManager = {
 	// The maximum ball width
 	maxBallWidth: 20,
 
+	// The width (in pixels) of the ball visual border
+	visualBorderWidth: 3,
+
+	// The amount of space (in pixels) to pad the physics objects
+	// Used to fine tune the alignment of the physics body to the visual object
+	physicsBorderPadding: 1,
+
 	// The amount of drift allowed in the trajectory of the balls
 	targetingDrift: 0.1,
 
@@ -81,13 +88,7 @@ var ballManager = {
 			var spawnLocation = ballManager.GetRandomSpawnPoint();
 
 			// Calculate the angle from the spawn point to the bumper in the center
-			var angleToCenter = physics.AngleToTarget({
-				x: spawnLocation.x,
-				y: spawnLocation.y
-			}, {
-				x: graphics.centerPoint.x,
-				y: graphics.centerPoint.y
-			})
+			var angleToCenter = physics.AngleToTarget(spawnLocation,graphics.centerPoint);
 
 			// Add some drift to the angle, adds some variety in the motion of the balls
 			angleToCenter += angleToCenter * ballManager.targetingDrift * ((Math.random() * 2) - 1);
@@ -104,6 +105,9 @@ var ballManager = {
 
 			// Nudge the ball toward the center
 			physics.ApplyImpulseToBody(entityManager.GetEntity(entityID).physicsBody, Math.random() * 3 + 2, angleToCenter);
+
+			//console.log( graphics.centerPoint.x + "," + graphics.centerPoint.x + " // " + spawnLocation.x + "," + spawnLocation.y + " angleToMouse=" + angleToCenter);
+
 		}
 	},
 

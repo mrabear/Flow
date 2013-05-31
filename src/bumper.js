@@ -44,7 +44,7 @@ bumper.prototype.BuildPhysicsBodyShape = function() {
 	var vertexList = [];
 
 	// Calculate the radius of the bumper
-	var radius = physics.CanvasToPhysics(graphics.canvas.width * bumperManager.widthRatio);
+	var radius = physics.CanvasToPhysics(graphics.canvas.width * bumperManager.widthRatio + bumperManager.physicsBorderPadding);
 
 	// Start the shape in the center of the physics body
 	vertexList.push(new b2Vec2(0, 0));
@@ -108,6 +108,13 @@ var bumperManager = {
 	// The percentage of the canvas width to use for the bumper diameter
 	widthRatio: 0.1,
 
+	// The width (in pixels) of the bumper border
+	visualBorderWidth: 8,
+
+	// The amount of space (in pixels) to pad the physics objects
+	// Used to fine tune the alignment of the physics body to the visual object
+	physicsBorderPadding: 5,
+
 	// The width (in radians) of each segment of the bumper physics body
 	vertexWidth: 0.05,
 
@@ -122,26 +129,21 @@ var bumperManager = {
 		var currentBumper = {}
 
 		// Bumper 1
-		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 0.00, 1.00, bumperManager.bumperColorList[0], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 0.00, 1.00, bumperManager.bumperColorList[0], bumperManager.visualBorderWidth);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 2
-		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.50, 1.70, bumperManager.bumperColorList[1], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.50, 1.70, bumperManager.bumperColorList[1], bumperManager.visualBorderWidth);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 
 		// Bumper 3
-		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.75, 1.95, bumperManager.bumperColorList[2], 8);
+		currentBumper = new bumper(graphics.centerPoint.x, graphics.centerPoint.y, 1.75, 1.95, bumperManager.bumperColorList[2], bumperManager.visualBorderWidth);
 		entityManager.AddEntity(entityManager.types.bumper, currentBumper.CreatePhysicsBody(), currentBumper);
 	},
 
 	// Update the origin angle that all bumpers orient themselves around
-	UpdateOriginAngle: function(delta) {
-		// Move the bumper origin angle backwards or forwards depending on the direction of the mouse drag
-		bumperManager.originAngle = bumperManager.originAngle + (delta) * (1 / 250);
-
-		// If the bumper origin angle hits either 0*pi (~0 degrees) or 2*pi (~360 degrees), flip it around 
-		// (this lets the bumper continually spin as the player drags)
-		if (bumperManager.originAngle > 2) bumperManager.originAngle = 0;
-		else if (bumperManager.originAngle < 0) bumperManager.originAngle = 2;
+	UpdateOriginAngle: function(mousePosition) {
+		// Move the bumper origin angle to point toward the mouse cursor
+		bumperManager.originAngle = physics.AngleToTarget(graphics.centerPoint, mousePosition) / Math.PI;
 	}
 };

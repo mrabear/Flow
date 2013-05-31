@@ -38,16 +38,9 @@ var input = {
 
 	// Called when the mouse is moved
 	MouseMove: function(eventData) {
-		// If the mouse is moving and the button is down, the user is dragging
-		if (input.isMouseDown) {
-			var newMousePosition = input.GetCanvasMouseCoords(eventData);
+		input.mousePosition = input.GetCanvasMouseCoords(eventData);
 
-			// Move the bumper origin angle backwards or forwards depending on the direction of the mouse drag
-			bumperManager.UpdateOriginAngle(input.mousePosition.x - newMousePosition.x);
-
-			// Update the position of the mouse
-			input.mousePosition = newMousePosition;
-		}
+		bumperManager.UpdateOriginAngle(input.mousePosition);
 	},
 
 	// Called when the left mouse button is released
